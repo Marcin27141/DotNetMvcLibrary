@@ -1,0 +1,33 @@
+﻿.register-title {
+    padding-block: 15px;
+}
+
+.register-column {
+    background-color: rgb(221, 208, 200);
+    border-radius: 30px;
+    padding-bottom: 50px;
+}
+
+.accept-terms-div {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    padding-left: 10px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.accept-terms-div label {
+    font-size: large;
+    margin-left: 10px;
+}
+
+.accept-terms-div input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
+#registerSubmit {
+    background-color: rgb(50, 50, 50);
+    color: white;
+}
