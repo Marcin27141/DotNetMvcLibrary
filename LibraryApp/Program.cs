@@ -1,8 +1,10 @@
 using LibraryApp.Models.Database;
+using LibraryApp.Models.Database.Entities;
 using LibraryApp.Models.Database.Generators;
 using LibraryApp.Models.Database.Generators.Books;
 using LibraryApp.Models.Database.Generators.BooksCopies;
 using LibraryApp.Models.Repositories.Accounts;
+using LibraryApp.Models.Repositories.Rentals;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,11 +16,12 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContextPool<LibraryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<LibraryUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<LibraryDbContext>();
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IDatabaseGenerator, DatabaseGenerator>();
+builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 
 var app = builder.Build();
 

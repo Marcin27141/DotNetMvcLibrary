@@ -2,10 +2,8 @@
 
 namespace LibraryApp.Models.Database.Entities
 {
-    public class LibraryUser
+    public class LibraryUser : IdentityUser
     {
-        public int LibraryUserId { get; set; }
-        
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateOnly Birthday { get; set; }
@@ -13,8 +11,8 @@ namespace LibraryApp.Models.Database.Entities
         public string Role { get; set; }
         public string Status { get; set; }
 
-        //relations
-        public string IdentityUserId { get; set; }
-        public IdentityUser IdentityUser { get; set; }
+        ////relations
+        //public string IdentityUserId { get; set; }
+        //public IdentityUser IdentityUser { get; set; }
     }
 }

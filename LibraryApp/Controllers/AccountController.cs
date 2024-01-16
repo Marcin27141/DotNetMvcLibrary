@@ -8,6 +8,7 @@ using System.Text;
 using LibraryApp.Models;
 using LibraryApp.Models.Database.Entities;
 using LibraryApp.Models.Repositories.Accounts;
+using System.Data;
 
 namespace LibraryApp.Controllers
 {
@@ -38,21 +39,21 @@ namespace LibraryApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = Activator.CreateInstance<IdentityUser>();
+                var user = Activator.CreateInstance<LibraryUser>();
                 user.Email = Input.Email;
                 user.UserName = Input.Email;
+                user.FirstName = Input.FirstName;
+                user.LastName = Input.LastName;
+                user.Birthday = Input.Birthday;
+                user.CreationDate = DateOnly.FromDateTime(DateTime.Today);
+                user.Status = "Inactive";
+                user.Role = "Reader";
+                //for testing
+                user.EmailConfirmed = true;
+
                 Reader reader = new()
                 {
-                    LibraryUser = new()
-                    {
-                        IdentityUser = user,
-                        FirstName = Input.FirstName,
-                        LastName = Input.LastName,
-                        Birthday = Input.Birthday,
-                        CreationDate = DateOnly.FromDateTime(DateTime.Today),
-                        Status = "Inactive",
-                        Role = "Reader"
-                    },
+                    LibraryUser = user,
                     IsActive = false
                 };
                 

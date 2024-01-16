@@ -4,6 +4,7 @@ using LibraryApp.Models.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryApp.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    partial class LibraryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240116203433_ExtendedIdentityUser")]
+    partial class ExtendedIdentityUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,6 +110,9 @@ namespace LibraryApp.Migrations
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("LibraryUserId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -213,7 +219,10 @@ namespace LibraryApp.Migrations
                     b.Property<DateOnly>("OriginalReturnDeadline")
                         .HasColumnType("date");
 
-                    b.Property<string>("ReaderId")
+                    b.Property<int>("ReaderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReaderLibraryUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -227,7 +236,7 @@ namespace LibraryApp.Migrations
 
                     b.HasIndex("BookCopyId");
 
-                    b.HasIndex("ReaderId");
+                    b.HasIndex("ReaderLibraryUserId");
 
                     b.ToTable("Rentals");
                 });
@@ -412,7 +421,7 @@ namespace LibraryApp.Migrations
 
                     b.HasOne("LibraryApp.Models.Database.Entities.Reader", "Reader")
                         .WithMany()
-                        .HasForeignKey("ReaderId")
+                        .HasForeignKey("ReaderLibraryUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

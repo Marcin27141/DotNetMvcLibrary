@@ -9,7 +9,7 @@
         
 
         //relations
-        public int ReaderId { get; set; }
+        public string ReaderId { get; set; }
         public Reader Reader { get; set; }
 
         public int BookCopyId { get; set; }

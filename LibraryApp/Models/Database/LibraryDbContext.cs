@@ -4,20 +4,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibraryApp.Models.Database
 {
-    public class LibraryDbContext : IdentityDbContext
+    public class LibraryDbContext : IdentityDbContext<LibraryUser>
     {
         public LibraryDbContext(DbContextOptions<LibraryDbContext> options) : base(options)
         {
         }
 
-        public DbSet<LibraryUser> LibraryUsers { get; set; }
+        //public DbSet<LibraryUser> LibraryUsers { get; set; }
         public DbSet<Reader> Readers { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<BookCopy> BookCopies { get; set; }
         public DbSet<Rental> Rentals { get; set; }
         public DbSet<Renewal> Renewals { get; set; }
-        
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,6 +23,13 @@ namespace LibraryApp.Models.Database
 
             modelBuilder.Entity<Reader>()
                 .HasKey(r => r.LibraryUserId);
+
+            modelBuilder.Entity<Reader>()
+            .HasOne(r => r.LibraryUser)
+            .WithOne();
+
         }
     }
+
+    
 }
