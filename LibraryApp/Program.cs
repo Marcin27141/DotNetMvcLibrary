@@ -1,4 +1,7 @@
 using LibraryApp.Models.Database;
+using LibraryApp.Models.Database.Generators;
+using LibraryApp.Models.Database.Generators.Books;
+using LibraryApp.Models.Database.Generators.BooksCopies;
 using LibraryApp.Models.Repositories.Accounts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,14 +18,12 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<LibraryDbContext>();
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IDatabaseGenerator, DatabaseGenerator>();
 
 var app = builder.Build();
 
-using (var serviceScope = app.Services.CreateScope())
-{
-    var dbContext = serviceScope.ServiceProvider.GetRequiredService<LibraryDbContext>();
-    new BooksGenerator(dbContext).SeedBooks();
-}
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -30,6 +31,14 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+} else
+{
+    //seeding database
+    using (var serviceScope = app.Services.CreateScope())
+    {
+        var databaseGenerator = serviceScope.ServiceProvider.GetRequiredService<IDatabaseGenerator>();
+        databaseGenerator?.SeedTables();
+    }
 }
 
 app.UseHttpsRedirection();

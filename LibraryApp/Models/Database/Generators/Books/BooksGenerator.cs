@@ -1,17 +1,12 @@
 ﻿using LibraryApp.Models.Database.Entities;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
+using static System.Reflection.Metadata.BlobBuilder;
 
-namespace LibraryApp.Models.Database
+namespace LibraryApp.Models.Database.Generators.Books
 {
-    public class BooksGenerator
+    public class BooksGenerator(LibraryDbContext context) : IBooksGenerator
     {
-        public BooksGenerator(LibraryDbContext context)
-        {
-            _context = context;
-        }
-
-        public readonly List<Book> books =
+        private readonly LibraryDbContext _context = context;
+        private readonly List<Book> books =
         [
             new Book
             {
@@ -92,40 +87,15 @@ namespace LibraryApp.Models.Database
                 OriginalLanguage = "English"
             }
         ];
-        private readonly LibraryDbContext _context;
 
-        private void GenerateBooks()
+        public List<Book> GenerateBooks()
         {
             foreach (Book book in books)
             {
                 _context.Books.Add(book);
             }
             _context.SaveChanges();
-        }
-
-        private const int COPIES_PER_BOOK = 5;
-
-        private void GenerateBooksCopies()
-        {
-            foreach (Book book in books)
-            {
-                for (int i = 0; i < COPIES_PER_BOOK; i++)
-                    _context.BookCopies.Add(new BookCopy
-                    {
-                        BookId = book.BookId
-                    }); ;
-            }
-            _context.SaveChanges();
-        }
-
-        public void SeedBooks()
-        {
-            if (!_context.Books.Any() && !_context.BookCopies.Any())
-            {
-                GenerateBooks();
-                GenerateBooksCopies();
-            }
-            
+            return books;
         }
     }
 }
