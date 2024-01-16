@@ -18,6 +18,12 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 var app = builder.Build();
 
+using (var serviceScope = app.Services.CreateScope())
+{
+    var dbContext = serviceScope.ServiceProvider.GetRequiredService<LibraryDbContext>();
+    new BooksGenerator(dbContext).SeedBooks();
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
