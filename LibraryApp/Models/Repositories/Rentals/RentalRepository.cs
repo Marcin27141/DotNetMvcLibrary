@@ -1,6 +1,7 @@
 ﻿using LibraryApp.Models.Database;
 using LibraryApp.Models.Database.Entities;
 using LibraryApp.Models.Repositories.Renewals;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryApp.Models.Repositories.Rentals
 {
@@ -14,7 +15,11 @@ namespace LibraryApp.Models.Repositories.Rentals
         }
         public List<Rental> GetReaderRentals(string readerId)
         {
-            return _context.Rentals.Where(r => r.ReaderId.Equals(readerId)).ToList();
+            return _context.Rentals
+                .Include(r => r.Reader)
+                .Include(r => r.BookCopy)
+                    .ThenInclude(bc => bc.Book)
+                .Where(r => r.ReaderId.Equals(readerId)).ToList();
         }
     }
 }

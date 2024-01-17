@@ -3,10 +3,12 @@ using LibraryApp.Models.Database.Entities;
 using LibraryApp.Models.Repositories.Accounts;
 using LibraryApp.Models.Repositories.Renewals;
 using LibraryApp.Models.Repositories.Rentals;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryApp.Controllers
 {
+    [Authorize(Policy = "IsReader")]
     public class RentalsController : Controller
     {
         private readonly IAccountRepository _accountRepository;

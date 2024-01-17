@@ -9,8 +9,16 @@
         <div class="col-lg-6">
             @foreach (var rental in Model.Rentals)
             {
-                <div>
-                    <p>Here goes rental info</p>
+                <div class="card mb-3" style="max-width: 540px;">
+                  <div class="row no-gutters">
+                    <div class="col-lg-12">
+                      <div class="card-body">
+                        <h5 class="card-title">@rental.BookCopy.Book.Title</h5>
+                        <p class="card-text">@rental.BookCopy.Book.Author</p>
+                        <p class="card-text">Return deadline: @rental.OriginalReturnDeadline</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
             }
         </div>

@@ -27,6 +27,7 @@ namespace LibraryApp.Controllers
 
         public IActionResult Index()
         {
+            //return RedirectToAction("Index", "Rentals", new { area = "" });
             return View();
         }
 

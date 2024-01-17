@@ -46,6 +46,7 @@ namespace LibraryApp.Models.Repositories.Accounts
             if (result.Succeeded)
             {
                 await _context.Readers.AddAsync(reader);
+                await _userManager.AddToRoleAsync(reader.LibraryUser, "Reader");
                 await _context.SaveChangesAsync();
             }
             
@@ -73,9 +74,9 @@ namespace LibraryApp.Models.Repositories.Accounts
         public async Task<Reader?> GetReaderByUsername(string username)
         {
             var user = await _userManager.FindByNameAsync(username);
-            if (user != null && user.Role.Equals("Reader"))
+            if (user != null && await _userManager.IsInRoleAsync(user, "Reader"))
             {
-                return _context.Readers.Find(username);
+                return _context.Readers.Find(user.Id);
             }
             return null;
         }

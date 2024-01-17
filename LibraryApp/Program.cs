@@ -17,11 +17,16 @@ builder.Services.AddDbContextPool<LibraryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 builder.Services.AddDefaultIdentity<LibraryUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<LibraryDbContext>();
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IDatabaseGenerator, DatabaseGenerator>();
 builder.Services.AddScoped<IRentalRepository, RentalRepository>();
+
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("IsReader", policy =>
+        policy.RequireRole("Reader"));
 
 var app = builder.Build();
 
