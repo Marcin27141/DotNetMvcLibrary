@@ -2,21 +2,45 @@
 @{
 }
 
+@section styles {
+    <link rel="Stylesheet" href="~/css/single-result-v2.css" />
+}
+
+
 <h1 class="text-center">Renewal confirmation</h1>
 
 <div class="row justify-content-center">
-    <div class="col-lg-6 col-md-6">
-        <div>
-            <h2 style="display: inline-block">Name:</h2>
-            <p>@Model.BookCopy.Book.Title</p>
-            <h2 style="display: inline-block">Author:</h2>
-            <p>@Model.BookCopy.Book.Author</p>
-            <h2 style="display: inline-block">Rental date:</h2>
-            <p>@Model.RentalDate</p>
-            <h2 style="display: inline-block">Current deadline:</h2>
-            <p>@Model.OriginalReturnDeadline</p>
-            <h2 style="display: inline-block">New deadline:</h2>
-            <p>@Model.OriginalReturnDeadline.AddDays(30)</p>
+    <div class="col-lg-8 col-md-8">
+        <div class="single-result">
+            <div class="key-value-result">
+                <h2>Name</h2>
+                <h4>@Model.BookCopy.Book.Title</h4>
+            </div>
+            <div class="key-value-result">
+                <h2>Author</h2>
+                <h4>@Model.BookCopy.Book.Author</h4>
+            </div>
+            <div class="key-value-result">
+                <h2>Rental date</h2>
+                <h4>@Model.RentalDate</h4>
+            </div>
+            <div class="key-value-result">
+                <h2>Current deadline</h2>
+                <h4>@Model.OriginalReturnDeadline</h4>
+            </div>
+            <div class="key-value-result">
+                <h2>New deadline</h2>
+                <h4>@Model.OriginalReturnDeadline.AddDays(30)</h4>
+            </div>
+            <div>
+                <h4 class="text-center">(Remaining renewals: 2)</h4>
+            </div>
+            <div class="button-div">
+                <form asp-action="Renew" method="post">
+                    <input name="rentalId" value="@Model.RentalId" hidden />
+                    <button class="submit-button" type="submit">Confirm</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
