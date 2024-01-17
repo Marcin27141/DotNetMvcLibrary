@@ -4,6 +4,7 @@ using LibraryApp.Models.Database.Generators;
 using LibraryApp.Models.Database.Generators.Books;
 using LibraryApp.Models.Database.Generators.BooksCopies;
 using LibraryApp.Models.Repositories.Accounts;
+using LibraryApp.Models.Repositories.Renewals;
 using LibraryApp.Models.Repositories.Rentals;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ builder.Services.AddDefaultIdentity<LibraryUser>(options => options.SignIn.Requi
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IDatabaseGenerator, DatabaseGenerator>();
 builder.Services.AddScoped<IRentalRepository, RentalRepository>();
+builder.Services.AddScoped<IRenewalRepository, RenewalRepository>();
 
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("IsReader", policy =>

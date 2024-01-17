@@ -7,14 +7,19 @@ namespace LibraryApp.Controllers
     public class RenewalController : Controller
     {
         private readonly IRenewalRepository _renewalRepository;
+        private readonly IRentalRepository _rentalRepository;
 
-        public RenewalController(IRenewalRepository renewalRepository)
+        public RenewalController(
+            IRenewalRepository renewalRepository,
+            IRentalRepository rentalRepository)
         {
             _renewalRepository = renewalRepository;
+            _rentalRepository = rentalRepository;
         }
-        public IActionResult Index()
+        public IActionResult Index(int rentalId)
         {
-            return View();
+            var rental = _rentalRepository.GetRentalById(rentalId);
+            return rental == null ? NotFound() : View(rental);
         }
     }
 }

@@ -26,5 +26,10 @@ namespace LibraryApp.Controllers
             var rentals = (reader == null) ? new List<Rental>() : _rentalRepository.GetReaderRentals(reader.LibraryUserId);
             return View(new RentalsViewModel(rentals));
         }
+
+        public IActionResult Renew(int rentalId)
+        {
+            return RedirectToAction("Index", "Renewal", new { rentalId } );
+        }
     }
 }

@@ -3,21 +3,34 @@
 
 }
 
+@section styles {
+    <link rel="Stylesheet" href="~/css/rentals-styling.css" />
+}
+
 @if (Model.Rentals.Any())
 {
-    <div class="row">
-        <div class="col-lg-6">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
             @foreach (var rental in Model.Rentals)
             {
-                <div class="card mb-3" style="max-width: 540px;">
+                <div class="card mb-3">
                   <div class="row no-gutters">
-                    <div class="col-lg-12">
+                    <div class="col-lg-8 col-md-4">
                       <div class="card-body">
                         <h5 class="card-title">@rental.BookCopy.Book.Title</h5>
-                        <p class="card-text">@rental.BookCopy.Book.Author</p>
-                        <p class="card-text">Return deadline: @rental.OriginalReturnDeadline</p>
+                        <p class="card-text author-text">@rental.BookCopy.Book.Author</p>
+                        <p class="card-text deadline-text">Return deadline: @rental.OriginalReturnDeadline</p>
                       </div>
                     </div>
+                        <div class="col-lg-4 col-md-4">
+                            <div class="rental-buttons">
+                                <button>Details</button>
+                                <form method="get" asp-action="Renew">
+                                    <input name="rentalId" value="@rental.RentalId" hidden />
+                                    <button type="submit" style="width: 100%;">Renew</button>
+                                </form>
+                            </div>
+                        </div>
                   </div>
                 </div>
             }

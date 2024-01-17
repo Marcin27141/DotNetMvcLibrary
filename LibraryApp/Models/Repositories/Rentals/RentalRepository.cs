@@ -21,5 +21,14 @@ namespace LibraryApp.Models.Repositories.Rentals
                     .ThenInclude(bc => bc.Book)
                 .Where(r => r.ReaderId.Equals(readerId)).ToList();
         }
+
+        public Rental? GetRentalById(int id)
+        {
+            return _context.Rentals
+                .Include(r => r.Reader)
+                .Include(r => r.BookCopy)
+                    .ThenInclude(bc => bc.Book)
+                .FirstOrDefault(r => r.RentalId == id);
+        }
     }
 }
