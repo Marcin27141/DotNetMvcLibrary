@@ -14,5 +14,7 @@
 
         public int BookCopyId { get; set; }
         public BookCopy BookCopy { get; set; }
+
+        public IList<Renewal> Renewals { get; set; }
     }
 }

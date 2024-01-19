@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LibraryApp.Migrations
 {
     /// <inheritdoc />
-    public partial class ExtendedIdentityUser : Migration
+    public partial class DatabaseSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,7 +30,6 @@ namespace LibraryApp.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LibraryUserId = table.Column<int>(type: "int", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Birthday = table.Column<DateOnly>(type: "date", nullable: false),
@@ -220,6 +219,28 @@ namespace LibraryApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Penalty",
+                columns: table => new
+                {
+                    PenaltyId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Amount = table.Column<int>(type: "int", nullable: false),
+                    ReaderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ImpositionDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    PaymentId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Penalty", x => x.PenaltyId);
+                    table.ForeignKey(
+                        name: "FK_Penalty_Readers_ReaderId",
+                        column: x => x.ReaderId,
+                        principalTable: "Readers",
+                        principalColumn: "LibraryUserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Rentals",
                 columns: table => new
                 {
@@ -228,8 +249,7 @@ namespace LibraryApp.Migrations
                     RentalDate = table.Column<DateOnly>(type: "date", nullable: false),
                     OriginalReturnDeadline = table.Column<DateOnly>(type: "date", nullable: false),
                     ReturnDate = table.Column<DateOnly>(type: "date", nullable: true),
-                    ReaderId = table.Column<int>(type: "int", nullable: false),
-                    ReaderLibraryUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ReaderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BookCopyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -242,10 +262,27 @@ namespace LibraryApp.Migrations
                         principalColumn: "BookCopyId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Rentals_Readers_ReaderLibraryUserId",
-                        column: x => x.ReaderLibraryUserId,
+                        name: "FK_Rentals_Readers_ReaderId",
+                        column: x => x.ReaderId,
                         principalTable: "Readers",
                         principalColumn: "LibraryUserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payment",
+                columns: table => new
+                {
+                    PenaltyId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payment", x => x.PenaltyId);
+                    table.ForeignKey(
+                        name: "FK_Payment_Penalty_PenaltyId",
+                        column: x => x.PenaltyId,
+                        principalTable: "Penalty",
+                        principalColumn: "PenaltyId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -315,6 +352,11 @@ namespace LibraryApp.Migrations
                 column: "BookId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Penalty_ReaderId",
+                table: "Penalty",
+                column: "ReaderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Renewals_RentalId",
                 table: "Renewals",
                 column: "RentalId");
@@ -325,9 +367,9 @@ namespace LibraryApp.Migrations
                 column: "BookCopyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rentals_ReaderLibraryUserId",
+                name: "IX_Rentals_ReaderId",
                 table: "Rentals",
-                column: "ReaderLibraryUserId");
+                column: "ReaderId");
         }
 
         /// <inheritdoc />
@@ -349,10 +391,16 @@ namespace LibraryApp.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Payment");
+
+            migrationBuilder.DropTable(
                 name: "Renewals");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Penalty");
 
             migrationBuilder.DropTable(
                 name: "Rentals");

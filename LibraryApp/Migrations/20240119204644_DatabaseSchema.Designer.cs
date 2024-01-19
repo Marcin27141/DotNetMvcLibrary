@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryApp.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20240116204119_ChangedRentalUserKey")]
-    partial class ChangedRentalUserKey
+    [Migration("20240119204644_DatabaseSchema")]
+    partial class DatabaseSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -111,9 +111,6 @@ namespace LibraryApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("LibraryUserId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -166,6 +163,44 @@ namespace LibraryApp.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.Database.Entities.Payment", b =>
+                {
+                    b.Property<int>("PenaltyId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PenaltyId");
+
+                    b.ToTable("Payment");
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.Database.Entities.Penalty", b =>
+                {
+                    b.Property<int>("PenaltyId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PenaltyId"));
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("ImpositionDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("PaymentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReaderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("PenaltyId");
+
+                    b.HasIndex("ReaderId");
+
+                    b.ToTable("Penalty");
                 });
 
             modelBuilder.Entity("LibraryApp.Models.Database.Entities.Reader", b =>
@@ -378,12 +413,34 @@ namespace LibraryApp.Migrations
             modelBuilder.Entity("LibraryApp.Models.Database.Entities.BookCopy", b =>
                 {
                     b.HasOne("LibraryApp.Models.Database.Entities.Book", "Book")
-                        .WithMany()
+                        .WithMany("Copies")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.Database.Entities.Payment", b =>
+                {
+                    b.HasOne("LibraryApp.Models.Database.Entities.Penalty", "Penalty")
+                        .WithOne("Payment")
+                        .HasForeignKey("LibraryApp.Models.Database.Entities.Payment", "PenaltyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Penalty");
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.Database.Entities.Penalty", b =>
+                {
+                    b.HasOne("LibraryApp.Models.Database.Entities.Reader", "Reader")
+                        .WithMany("Penalties")
+                        .HasForeignKey("ReaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Reader");
                 });
 
             modelBuilder.Entity("LibraryApp.Models.Database.Entities.Reader", b =>
@@ -400,7 +457,7 @@ namespace LibraryApp.Migrations
             modelBuilder.Entity("LibraryApp.Models.Database.Entities.Renewal", b =>
                 {
                     b.HasOne("LibraryApp.Models.Database.Entities.Rental", "Rental")
-                        .WithMany()
+                        .WithMany("Renewals")
                         .HasForeignKey("RentalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -417,7 +474,7 @@ namespace LibraryApp.Migrations
                         .IsRequired();
 
                     b.HasOne("LibraryApp.Models.Database.Entities.Reader", "Reader")
-                        .WithMany()
+                        .WithMany("Rentals")
                         .HasForeignKey("ReaderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -476,6 +533,29 @@ namespace LibraryApp.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.Database.Entities.Book", b =>
+                {
+                    b.Navigation("Copies");
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.Database.Entities.Penalty", b =>
+                {
+                    b.Navigation("Payment")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.Database.Entities.Reader", b =>
+                {
+                    b.Navigation("Penalties");
+
+                    b.Navigation("Rentals");
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.Database.Entities.Rental", b =>
+                {
+                    b.Navigation("Renewals");
                 });
 #pragma warning restore 612, 618
         }

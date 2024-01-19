@@ -5,6 +5,7 @@ using LibraryApp.Models.Database.Generators.Books;
 using LibraryApp.Models.Database.Generators.BooksCopies;
 using LibraryApp.Models.Repositories.Accounts;
 using LibraryApp.Models.Repositories.Renewals;
+using LibraryApp.Models.Repositories.Renewals.RenewalValidators;
 using LibraryApp.Models.Repositories.Rentals;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -17,14 +18,25 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContextPool<LibraryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
-builder.Services.AddDefaultIdentity<LibraryUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<LibraryDbContext>();
+builder.Services.AddDefaultIdentity<LibraryUser>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+    //for testing
+    options.Password.RequireDigit = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 1;
+})
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<LibraryDbContext>();
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IDatabaseGenerator, DatabaseGenerator>();
 builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 builder.Services.AddScoped<IRenewalRepository, RenewalRepository>();
+
+builder.Services.AddScoped<IRenewalValidator, UnpaidPenaltiesValidator>();
+builder.Services.AddScoped<IRenewalValidator, RenewalLimitValidator>();
 
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("IsReader", policy =>

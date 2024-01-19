@@ -8,5 +8,7 @@
         public int? PublicationYear { get; set; }
         public string? Subject { get; set; }
         public string? OriginalLanguage { get; set; }
+
+        public IList<BookCopy> Copies { get; set; }
     }
 }

@@ -11,8 +11,5 @@ namespace LibraryApp.Models.Database.Entities
         public string Role { get; set; }
         public string Status { get; set; }
 
-        ////relations
-        //public string IdentityUserId { get; set; }
-        //public IdentityUser IdentityUser { get; set; }
     }
 }

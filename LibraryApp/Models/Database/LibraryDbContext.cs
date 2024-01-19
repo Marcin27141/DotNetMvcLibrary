@@ -1,6 +1,8 @@
 ﻿using LibraryApp.Models.Database.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System;
 
 namespace LibraryApp.Models.Database
 {
@@ -10,7 +12,6 @@ namespace LibraryApp.Models.Database
         {
         }
 
-        //public DbSet<LibraryUser> LibraryUsers { get; set; }
         public DbSet<Reader> Readers { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<BookCopy> BookCopies { get; set; }
@@ -28,6 +29,13 @@ namespace LibraryApp.Models.Database
             .HasOne(r => r.LibraryUser)
             .WithOne();
 
+            modelBuilder.Entity<Payment>()
+                .HasKey(p => p.PenaltyId);
+
+            modelBuilder.Entity<Payment>()
+            .HasOne(p => p.Penalty)
+            .WithOne(p => p.Payment)
+            .HasForeignKey<Payment>(p => p.PenaltyId);
         }
     }
 
