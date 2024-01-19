@@ -4,6 +4,6 @@ namespace LibraryApp.Models.Repositories.Renewals
 {
     public interface IRenewalRepository
     {
-        Task<RenewalValidityCheck> IsValidForRenewalAsync(Rental rental);
+        RenewalValidityCheck IsValidForRenewal(Rental rental);
     }
 }

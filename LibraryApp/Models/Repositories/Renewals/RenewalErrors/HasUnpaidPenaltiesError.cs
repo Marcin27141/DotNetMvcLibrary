@@ -2,7 +2,7 @@
 
 namespace LibraryApp.Models.Repositories.Renewals
 {
-    public class HasUnpaidPenalties : RenewalError
+    public class HasUnpaidPenaltiesError : RenewalError
     {
         public int NumberOfUnpaidPenalties { get; set; }
     }

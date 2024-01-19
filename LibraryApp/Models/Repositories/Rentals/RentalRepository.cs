@@ -28,6 +28,7 @@ namespace LibraryApp.Models.Repositories.Rentals
                 .Include(r => r.Reader)
                 .Include(r => r.BookCopy)
                     .ThenInclude(bc => bc.Book)
+                .Include(r => r.Renewals)
                 .FirstOrDefault(r => r.RentalId == id);
         }
     }

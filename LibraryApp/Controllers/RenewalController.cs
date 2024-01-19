@@ -25,12 +25,12 @@ namespace LibraryApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Renew(int rentalId)
+        public ActionResult Renew(int rentalId)
         {
             var rental = _rentalRepository.GetRentalById(rentalId);
             if (rental == null) return NotFound();
 
-            var validityCheck = await _renewalRepository.IsValidForRenewalAsync(rental);
+            var validityCheck = _renewalRepository.IsValidForRenewal(rental);
             if (validityCheck.IsValidForRenewal)
             {
                 //TODO: actually renew the checkout
@@ -49,8 +49,8 @@ namespace LibraryApp.Controllers
             var error = errors.First();
             string? viewName = error switch
             {
-                _ when error is HasUnpaidPenalties => nameof(UnpaidPenalties),
-                _ when error is RenewalsLimitReached => nameof(RenewalsLimit),
+                _ when error is HasUnpaidPenaltiesError => nameof(UnpaidPenalties),
+                _ when error is RenewalsLimitReachedError => nameof(RenewalsLimit),
                 _ => null
             };
 

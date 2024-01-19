@@ -2,7 +2,7 @@
 
 namespace LibraryApp.Models.Repositories.Renewals
 {
-    public class RenewalsLimitReached : RenewalError
+    public class RenewalsLimitReachedError : RenewalError
     {
         public int Limit { get; set; }
     }
