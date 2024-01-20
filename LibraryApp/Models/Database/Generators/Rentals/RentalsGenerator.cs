@@ -24,13 +24,17 @@ namespace LibraryApp.Models.Database.Generators.Rentals
             foreach (var reader in readers)
             {
                 for (int i = 0; i < RENTALS_PER_USER; i++)
+                {
+                    var deadline = today.AddDays(30);
                     _context.Rentals.Add(new Rental
                     {
                         RentalDate = today,
-                        OriginalReturnDeadline = today.AddDays(30),
+                        OriginalReturnDeadline = deadline,
+                        CurrentDeadline = deadline,
                         ReaderId = reader.LibraryUserId,
                         BookCopyId = bookCopies[i].BookCopyId
                     });
+                }
             }
             _context.SaveChanges();
         }

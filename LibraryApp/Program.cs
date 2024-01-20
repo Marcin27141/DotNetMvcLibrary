@@ -5,6 +5,7 @@ using LibraryApp.Models.Database.Generators.Books;
 using LibraryApp.Models.Database.Generators.BooksCopies;
 using LibraryApp.Models.Repositories.Accounts;
 using LibraryApp.Models.Repositories.Renewals;
+using LibraryApp.Models.Repositories.Renewals.RenewalCreator;
 using LibraryApp.Models.Repositories.Renewals.RenewalValidators;
 using LibraryApp.Models.Repositories.Rentals;
 using Microsoft.AspNetCore.Identity;
@@ -30,13 +31,16 @@ builder.Services.AddDefaultIdentity<LibraryUser>(options =>
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<LibraryDbContext>();
 
+builder.Services.AddScoped<IRenewalValidator, UnpaidPenaltiesValidator>();
+builder.Services.AddScoped<IRenewalValidator, RenewalLimitValidator>();
+builder.Services.AddScoped<IRenewalCreator, RenewalCreator>();
+
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IDatabaseGenerator, DatabaseGenerator>();
 builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 builder.Services.AddScoped<IRenewalRepository, RenewalRepository>();
 
-builder.Services.AddScoped<IRenewalValidator, UnpaidPenaltiesValidator>();
-builder.Services.AddScoped<IRenewalValidator, RenewalLimitValidator>();
+
 
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("IsReader", policy =>

@@ -5,6 +5,7 @@
         public int RentalId { get; set; }
         public DateOnly RentalDate { get; set; }
         public DateOnly OriginalReturnDeadline { get; set; }
+        public DateOnly CurrentDeadline { get; set; }
         public DateOnly? ReturnDate { get; set; }
         
 

@@ -1,6 +1,7 @@
 ﻿using LibraryApp.Models.Repositories.Renewals;
 using LibraryApp.Models.Repositories.Renewals.RenewalErrors;
 using LibraryApp.Models.Repositories.Rentals;
+using LibraryApp.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryApp.Controllers
@@ -20,12 +21,23 @@ namespace LibraryApp.Controllers
         public IActionResult Index(int rentalId)
         {
             var rental = _rentalRepository.GetRentalById(rentalId);
-            return rental == null ? NotFound() : View(rental);
+            if (rental == null)
+                return NotFound();
+            else
+            {
+                var viewModel = new ConfirmRenewalViewModel()
+                {
+                    Rental = rental,
+                    RemainingRenewals = _renewalRepository.GetRemainingRenewals(rental),
+                    RenewalSpanInDays = _renewalRepository.GetRenewalSpan()
+                };
+                return View(viewModel);
+            }            
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Renew(int rentalId)
+        public async Task<ActionResult> Renew(int rentalId)
         {
             var rental = _rentalRepository.GetRentalById(rentalId);
             if (rental == null) return NotFound();
@@ -33,9 +45,7 @@ namespace LibraryApp.Controllers
             var validityCheck = _renewalRepository.IsValidForRenewal(rental);
             if (validityCheck.IsValidForRenewal)
             {
-                //TODO: actually renew the checkout
-                //empty
-
+                await _renewalRepository.RenewRental(rentalId);
                 return RedirectToAction(nameof(Success), new { rentalId });
             }
             else return DisplayViewForErrors(validityCheck.Errors);

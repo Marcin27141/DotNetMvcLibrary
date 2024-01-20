@@ -24,7 +24,7 @@ namespace LibraryApp.Controllers
         {
             var reader = await _accountRepository.GetReaderByUsername(User.Identity.Name);
             var rentals = (reader == null) ? new List<Rental>() : _rentalRepository.GetReaderRentals(reader.LibraryUserId);
-            return View(new RentalsViewModel(rentals));
+            return View(rentals);
         }
 
         public IActionResult Renew(int rentalId)
