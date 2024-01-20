@@ -6,7 +6,7 @@ namespace LibraryApp.Models.Repositories.EmailSender
     {
         public Task SendConfirmationLinkAsync(LibraryUser user, string link)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }

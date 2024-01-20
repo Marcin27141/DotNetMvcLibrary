@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using LibraryApp.Models.Database;
 using LibraryApp.Models.Database.Entities;
+using LibraryApp.Models.Repositories.Accounts.AccountValidator;
 using LibraryApp.Models.Repositories.EmailSender;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -15,19 +16,19 @@ namespace LibraryApp.Models.Repositories.Accounts
 {
     public class AccountRepository : IAccountRepository
     {
-        private readonly SignInManager<LibraryUser> _signInManager;
         private readonly UserManager<LibraryUser> _userManager;
+        private readonly IAccountValidator _accountValidator;
         private readonly ILibraryEmailSender _emailSender;
         private readonly LibraryDbContext _context;
 
         public AccountRepository(
             UserManager<LibraryUser> userManager,
-            SignInManager<LibraryUser> signInManager,
+            IAccountValidator accountValidator,
             ILibraryEmailSender emailSender,
             LibraryDbContext context)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
+            _accountValidator = accountValidator;
             _emailSender = emailSender;
             _context = context;
         }
@@ -81,5 +82,7 @@ namespace LibraryApp.Models.Repositories.Accounts
         {
             return _userManager.GenerateEmailConfirmationTokenAsync(user);
         }
+
+        public IdentityResult ValidateUser(LibraryUser user) => _accountValidator.Validate(user);
     }
 }

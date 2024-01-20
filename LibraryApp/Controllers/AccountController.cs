@@ -37,24 +37,40 @@ namespace LibraryApp.Controllers
 
         public async Task<IActionResult> Register()
         {
+       
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
                 Reader reader = CreateReader(user);
 
-                var creationResult = await _accountRepository.CreateReaderAsync(reader, Input.Password);
-
-                if (creationResult.Succeeded)
+                var userValidation = _accountRepository.ValidateUser(user);
+                if (userValidation.Succeeded)
                 {
-                    var confirmLink = await GetConfirmLinkAsync(user);
-
-                    await _accountRepository.SendConfirmationLinkAsync(reader.LibraryUser, confirmLink);
-                    return RedirectToAction(nameof(LinkSent));
+                    var wasCreated = await TryCreateReader(reader);
+                    if (wasCreated) RedirectToAction(nameof(LinkSent));
                 }
-                else AddCreationErrorsToModelState(creationResult);
+                else AddCreationErrorsToModelState(userValidation.Errors);
             }
 
             return View(nameof(Index));
+        }
+
+        private async Task<bool> TryCreateReader(Reader reader)
+        {
+            var creationResult = await _accountRepository.CreateReaderAsync(reader, Input.Password);
+
+            if (creationResult.Succeeded)
+            {
+                var confirmLink = await GetConfirmLinkAsync(reader.LibraryUser);
+
+                await _accountRepository.SendConfirmationLinkAsync(reader.LibraryUser, confirmLink);
+                return true;
+            }
+            else
+            {
+                AddCreationErrorsToModelState(creationResult.Errors);
+                return false;
+            }
         }
 
         private async Task<string> GetConfirmLinkAsync(LibraryUser user)
@@ -69,9 +85,9 @@ namespace LibraryApp.Controllers
             return HtmlEncoder.Default.Encode(link);
         }
 
-        private void AddCreationErrorsToModelState(IdentityResult creationResult)
+        private void AddCreationErrorsToModelState(IEnumerable<IdentityError> errors)
         {
-            foreach (var error in creationResult.Errors)
+            foreach (var error in errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
