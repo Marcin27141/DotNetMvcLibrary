@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using LibraryApp.Models.Database;
 using LibraryApp.Models.Database.Entities;
+using LibraryApp.Models.Repositories.EmailSender;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -16,13 +17,13 @@ namespace LibraryApp.Models.Repositories.Accounts
     {
         private readonly SignInManager<LibraryUser> _signInManager;
         private readonly UserManager<LibraryUser> _userManager;
-        private readonly IEmailSender _emailSender;
+        private readonly ILibraryEmailSender _emailSender;
         private readonly LibraryDbContext _context;
 
         public AccountRepository(
             UserManager<LibraryUser> userManager,
             SignInManager<LibraryUser> signInManager,
-            IEmailSender emailSender,
+            ILibraryEmailSender emailSender,
             LibraryDbContext context)
         {
             _userManager = userManager;
@@ -61,14 +62,9 @@ namespace LibraryApp.Models.Repositories.Accounts
             return await _userManager.AddClaimAsync(appUser, claim);
         }
 
-        public async Task SendConfirmationLinkAsync(LibraryUser user)
+        public async Task SendConfirmationLinkAsync(LibraryUser user, string link)
         {
-            //if (user.Email != null)
-            //{
-            //    await _emailSender.SendEmailAsync(user.Email, "Confirm your email",
-            //            $"Please confirm your account by clicking here</a>.");
-            //}
-
+            await _emailSender.SendConfirmationLinkAsync(user, link);
         }
 
         public async Task<Reader?> GetReaderByUsername(string username)
@@ -79,6 +75,11 @@ namespace LibraryApp.Models.Repositories.Accounts
                 return _context.Readers.Find(user.Id);
             }
             return null;
+        }
+
+        public Task<string> GenerateEmailConfirmationTokenAsync(LibraryUser user)
+        {
+            return _userManager.GenerateEmailConfirmationTokenAsync(user);
         }
     }
 }

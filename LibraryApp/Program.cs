@@ -4,6 +4,7 @@ using LibraryApp.Models.Database.Generators;
 using LibraryApp.Models.Database.Generators.Books;
 using LibraryApp.Models.Database.Generators.BooksCopies;
 using LibraryApp.Models.Repositories.Accounts;
+using LibraryApp.Models.Repositories.EmailSender;
 using LibraryApp.Models.Repositories.Renewals;
 using LibraryApp.Models.Repositories.Renewals.RenewalCreator;
 using LibraryApp.Models.Repositories.Renewals.RenewalValidators;
@@ -30,6 +31,8 @@ builder.Services.AddDefaultIdentity<LibraryUser>(options =>
 })
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<LibraryDbContext>();
+
+builder.Services.AddScoped<ILibraryEmailSender, LibraryEmailSender>();
 
 builder.Services.AddScoped<IRenewalValidator, UnpaidPenaltiesValidator>();
 builder.Services.AddScoped<IRenewalValidator, RenewalLimitValidator>();

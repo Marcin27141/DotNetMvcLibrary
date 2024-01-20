@@ -10,5 +10,4 @@
         public string? OriginalLanguage { get; set; }
 
         public IList<BookCopy> Copies { get; set; }
-    }
-}
+    }}

@@ -1,4 +1,4 @@
-﻿@model LibraryApp.Models.RentalsViewModel
+﻿@model IEnumerable<LibraryApp.Models.Database.Entities.Rental>
 @{
 
 }
@@ -7,11 +7,11 @@
     <link rel="Stylesheet" href="~/css/rentals-styling.css" />
 }
 
-@if (Model.Rentals.Any())
+@if (Model.Any())
 {
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            @foreach (var rental in Model.Rentals)
+            @foreach (var rental in Model)
             {
                 <div class="card mb-3">
                   <div class="row no-gutters">
@@ -19,7 +19,7 @@
                       <div class="card-body">
                         <h5 class="card-title">@rental.BookCopy.Book.Title</h5>
                         <p class="card-text author-text">@rental.BookCopy.Book.Author</p>
-                        <p class="card-text deadline-text">Return deadline: @rental.OriginalReturnDeadline</p>
+                        <p class="card-text deadline-text">Return deadline: @rental.CurrentDeadline</p>
                       </div>
                     </div>
                         <div class="col-lg-4 col-md-4">

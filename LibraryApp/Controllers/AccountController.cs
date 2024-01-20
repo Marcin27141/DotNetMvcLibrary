@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Text;
-using LibraryApp.Models;
 using LibraryApp.Models.Database.Entities;
 using LibraryApp.Models.Repositories.Accounts;
 using System.Data;
+using LibraryApp.Models.ViewModels;
 
 namespace LibraryApp.Controllers
 {
@@ -27,7 +27,6 @@ namespace LibraryApp.Controllers
 
         public IActionResult Index()
         {
-            //return RedirectToAction("Index", "Rentals", new { area = "" });
             return View();
         }
 
@@ -40,39 +39,68 @@ namespace LibraryApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = Activator.CreateInstance<LibraryUser>();
-                user.Email = Input.Email;
-                user.UserName = Input.Email;
-                user.FirstName = Input.FirstName;
-                user.LastName = Input.LastName;
-                user.Birthday = Input.Birthday;
-                user.CreationDate = DateOnly.FromDateTime(DateTime.Today);
-                user.Status = "Inactive";
-                user.Role = "Reader";
-                //for testing
-                user.EmailConfirmed = true;
+                var user = CreateUser();
+                Reader reader = CreateReader(user);
 
-                Reader reader = new()
-                {
-                    LibraryUser = user,
-                    IsActive = false
-                };
-                
-                var result = await _accountRepository.CreateReaderAsync(reader, Input.Password);
+                var creationResult = await _accountRepository.CreateReaderAsync(reader, Input.Password);
 
-                if (result.Succeeded)
+                if (creationResult.Succeeded)
                 {
-                    await _accountRepository.SendConfirmationLinkAsync(reader.LibraryUser);
+                    var confirmLink = await GetConfirmLinkAsync(user);
+
+                    await _accountRepository.SendConfirmationLinkAsync(reader.LibraryUser, confirmLink);
                     return RedirectToAction(nameof(LinkSent));
                 }
-
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                else AddCreationErrorsToModelState(creationResult);
             }
 
             return View(nameof(Index));
+        }
+
+        private async Task<string> GetConfirmLinkAsync(LibraryUser user)
+        {
+            var code = await _accountRepository.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var link = Url.Page(
+                "/Account/ConfirmEmail",
+                pageHandler: null,
+                values: new { area = "Identity", userId = user.Id, code },
+                protocol: Request.Scheme);
+            return HtmlEncoder.Default.Encode(link);
+        }
+
+        private void AddCreationErrorsToModelState(IdentityResult creationResult)
+        {
+            foreach (var error in creationResult.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+
+        private static Reader CreateReader(LibraryUser user)
+        {
+            return new()
+            {
+                LibraryUser = user,
+                IsActive = false
+            };
+        }
+
+        private LibraryUser CreateUser()
+        {
+            var user = Activator.CreateInstance<LibraryUser>();
+            user.Email = Input.Email;
+            user.UserName = Input.Email;
+            user.FirstName = Input.FirstName;
+            user.LastName = Input.LastName;
+            user.Birthday = Input.Birthday;
+            user.CreationDate = DateOnly.FromDateTime(DateTime.Today);
+            user.Status = "Inactive";
+            user.Role = "Reader";
+            //for testing
+            user.EmailConfirmed = true;
+
+            return user;
         }
     }
 }
