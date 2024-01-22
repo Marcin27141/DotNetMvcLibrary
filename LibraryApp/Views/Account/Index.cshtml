@@ -4,7 +4,7 @@
 }
 
 @section styles {
-    <link rel="Stylesheet" href="~/css/register-stylingv2.css" />
+    <link rel="Stylesheet" href="~/css/register-stylingv3.css" />
 }
 
 <div class="row justify-content-center">
@@ -43,13 +43,16 @@
                 <label asp-for="ConfirmPassword">Confirm Password</label>
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
-            <div class="accept-terms-div">
-                <input asp-for="TermsAccepted" />
-                <label asp-for="TermsAccepted">
-                    I accept the Library's
-                    <a asp-controller="Home" asp-action="Statute">Statute</a> and
-                    <a asp-controller="Home" asp-action="Terms">Terms and Conditions</a>.
-                </label>
+            <div class="outer-terms-div">
+                <div class="accept-terms-div">
+                    <input asp-for="TermsAccepted" />
+                    <label asp-for="TermsAccepted">
+                        I accept the Library's
+                        <a asp-controller="Home" asp-action="Statute">Statute</a> and
+                        <a asp-controller="Home" asp-action="Terms">Terms and Conditions</a>.
+                    </label>
+                </div>
+                <span asp-validation-for="TermsAccepted" class="text-danger"></span>
             </div>
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </form>

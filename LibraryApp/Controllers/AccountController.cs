@@ -40,16 +40,15 @@ namespace LibraryApp.Controllers
        
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
-                Reader reader = CreateReader(user);
-
-                var userValidation = _accountRepository.ValidateUser(user);
-                if (userValidation.Succeeded)
+                var userValidation = _accountRepository.ValidateUser(Input);
+                if (userValidation.IsSuccess)
                 {
+                    var user = CreateUser();
+                    Reader reader = CreateReader(user);
                     var wasCreated = await TryCreateReader(reader);
                     if (wasCreated) RedirectToAction(nameof(LinkSent));
                 }
-                else AddCreationErrorsToModelState(userValidation.Errors);
+                else AddValidationErrorsToModelState(userValidation.Errors);
             }
 
             return View(nameof(Index));
@@ -68,7 +67,7 @@ namespace LibraryApp.Controllers
             }
             else
             {
-                AddCreationErrorsToModelState(creationResult.Errors);
+                AddIdentityErrorsToModelState(creationResult.Errors);
                 return false;
             }
         }
@@ -85,11 +84,19 @@ namespace LibraryApp.Controllers
             return HtmlEncoder.Default.Encode(link);
         }
 
-        private void AddCreationErrorsToModelState(IEnumerable<IdentityError> errors)
+        private void AddIdentityErrorsToModelState(IEnumerable<IdentityError> errors)
         {
             foreach (var error in errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+
+        private void AddValidationErrorsToModelState(IEnumerable<AccountValidationError> errors)
+        {
+            foreach (var errorGroup in errors.GroupBy(e => e.PropertyName))
+            {
+                ModelState.AddModelError(errorGroup.Key, string.Join(", ", errorGroup.Select(e => e.Description)));
             }
         }
 

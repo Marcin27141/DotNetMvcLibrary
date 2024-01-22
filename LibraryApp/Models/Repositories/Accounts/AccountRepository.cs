@@ -3,6 +3,7 @@ using LibraryApp.Models.Database;
 using LibraryApp.Models.Database.Entities;
 using LibraryApp.Models.Repositories.Accounts.AccountValidator;
 using LibraryApp.Models.Repositories.EmailSender;
+using LibraryApp.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -85,6 +86,6 @@ namespace LibraryApp.Models.Repositories.Accounts
             return _userManager.GenerateEmailConfirmationTokenAsync(user);
         }
 
-        public IdentityResult ValidateUser(LibraryUser user) => _accountValidator.Validate(user);
+        public AccountValidationResult ValidateUser(RegisterViewModel user) => _accountValidator.Validate(user);
     }
 }

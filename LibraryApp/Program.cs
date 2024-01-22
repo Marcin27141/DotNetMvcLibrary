@@ -12,6 +12,7 @@ using LibraryApp.Models.Repositories.Renewals.RenewalCreator;
 using LibraryApp.Models.Repositories.Renewals.RenewalSpecification;
 using LibraryApp.Models.Repositories.Renewals.RenewalValidators;
 using LibraryApp.Models.Repositories.Rentals;
+using LibraryApp.Models.Specifications.Passwords;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,9 +38,16 @@ builder.Services.AddDefaultIdentity<LibraryUser>(options =>
 
 builder.Services.AddScoped<ILibraryEmailSender, LibraryEmailSender>();
 
+builder.Services.AddSingleton<IPasswordsSpecification, PasswordsSpecification>();
+
 builder.Services.AddScoped<IAccountValidator, AccountValidator>();
 builder.Services.AddScoped<IAccountVerifier, UserAgeVerifier>();
 builder.Services.AddScoped<IAccountVerifier, ValidDateVerifier>();
+builder.Services.AddScoped<IAccountVerifier, NameFormatVerifier>();
+builder.Services.AddScoped<IAccountVerifier, EmailFormatVerifier>();
+builder.Services.AddScoped<IAccountVerifier, DocumentsAcceptedVerifier>();
+builder.Services.AddScoped<IAccountVerifier, PasswordEqualityVerifier>();
+builder.Services.AddScoped<IAccountVerifier, PasswordStrengthVerifier>();
 
 builder.Services.AddSingleton<IRenewalSpecification, RenewalSpecification>();
 

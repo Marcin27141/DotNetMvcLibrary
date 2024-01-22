@@ -2,22 +2,19 @@
 using LibraryApp.Models.Repositories.Accounts.AccountValidator;
 using LibraryApp.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LibraryApp.Models.Repositories.Accounts.AccountVerifiers
 {
-    public class ValidDateVerifier : IAccountVerifier
+    public class PasswordEqualityVerifier : IAccountVerifier
     {
-        private readonly DateOnly MINIMUM_BIRTHDAY = DateOnly.Parse("01.01.1900");
         public AccountValidationResult VerifyAccount(RegisterViewModel user)
         {
-            return user.Birthday > MINIMUM_BIRTHDAY && user.Birthday <= Today() ?
+            return user.Password.Equals(user.ConfirmPassword) ?
                 AccountValidationResult.Success() :
                 AccountValidationResult.Failure(new AccountValidationError(
-                    nameof(user.Birthday),
-                    $"Birthday must be between {MINIMUM_BIRTHDAY} and {Today()}"
-                    ));
+                nameof(user.ConfirmPassword), "Passwords must be the same"));
         }
-
-        private static DateOnly Today() => DateOnly.FromDateTime(DateTime.Now);
     }
 }

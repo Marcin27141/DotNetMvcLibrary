@@ -3,6 +3,7 @@ using LibraryApp.Models.Repositories.Renewals.RenewalErrors;
 using LibraryApp.Models.Repositories.Renewals.RenewalValidators;
 using LibraryApp.Models.Repositories.Renewals;
 using Microsoft.AspNetCore.Identity;
+using LibraryApp.Models.ViewModels;
 
 namespace LibraryApp.Models.Repositories.Accounts.AccountValidator
 {
@@ -14,20 +15,20 @@ namespace LibraryApp.Models.Repositories.Accounts.AccountValidator
         {
             _accountVerifiers = accountVerifiers;
         }
-        public IdentityResult Validate(LibraryUser user)
+        public AccountValidationResult Validate(RegisterViewModel user)
         {
-            var errors = new List<IdentityError>();
+            var errors = new List<AccountValidationError>();
 
             foreach (var verifier in _accountVerifiers)
             {
                 var result = verifier.VerifyAccount(user);
-                if (!result.Succeeded)
+                if (!result.IsSuccess)
                     errors.AddRange(result.Errors);
             }
 
             return errors.Count == 0 ?
-                IdentityResult.Success :
-                IdentityResult.Failed(errors.ToArray());
+                AccountValidationResult.Success() :
+                AccountValidationResult.Failure(errors);
         }
     }
 }
