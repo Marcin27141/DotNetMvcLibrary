@@ -1,23 +1,26 @@
 ﻿using LibraryApp.Models.Database;
 using LibraryApp.Models.Database.Entities;
+using LibraryApp.Models.Repositories.Renewals.RenewalSpecification;
 
 namespace LibraryApp.Models.Repositories.Renewals.RenewalCreator
 {
     public class RenewalCreator : IRenewalCreator
     {
-        private const int RENEWAL_SPAN_IN_DAYS = 30;
+        private readonly IRenewalSpecification _renewalSpecification;
 
+        public RenewalCreator(IRenewalSpecification renewalSpecification)
+        {
+            _renewalSpecification = renewalSpecification;
+        }
         public Renewal CreateRenewal(Rental rental)
         {
-            var previousDeadline = rental.Renewals.Any() ? rental.Renewals.Max(r => r.NewReturnDeadline) : rental.OriginalReturnDeadline;
+            var newDeadline = rental.CurrentDeadline.AddDays(_renewalSpecification.RenewalSpanInDays);
             return new Renewal()
             {
                 RentalId = rental.RentalId,
                 RenewalDate = DateOnly.FromDateTime(DateTime.Today),
-                NewReturnDeadline = previousDeadline.AddDays(RENEWAL_SPAN_IN_DAYS)
+                NewReturnDeadline = newDeadline
             };
         }
-
-        public int GetRenewalSpan() => RENEWAL_SPAN_IN_DAYS;
     }
 }

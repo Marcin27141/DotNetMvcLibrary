@@ -9,6 +9,7 @@ using LibraryApp.Models.Repositories.Accounts.AccountVerifiers;
 using LibraryApp.Models.Repositories.EmailSender;
 using LibraryApp.Models.Repositories.Renewals;
 using LibraryApp.Models.Repositories.Renewals.RenewalCreator;
+using LibraryApp.Models.Repositories.Renewals.RenewalSpecification;
 using LibraryApp.Models.Repositories.Renewals.RenewalValidators;
 using LibraryApp.Models.Repositories.Rentals;
 using Microsoft.AspNetCore.Identity;
@@ -39,6 +40,8 @@ builder.Services.AddScoped<ILibraryEmailSender, LibraryEmailSender>();
 builder.Services.AddScoped<IAccountValidator, AccountValidator>();
 builder.Services.AddScoped<IAccountVerifier, UserAgeVerifier>();
 builder.Services.AddScoped<IAccountVerifier, ValidDateVerifier>();
+
+builder.Services.AddSingleton<IRenewalSpecification, RenewalSpecification>();
 
 builder.Services.AddScoped<IRenewalValidator, UnpaidPenaltiesValidator>();
 builder.Services.AddScoped<IRenewalValidator, RenewalLimitValidator>();

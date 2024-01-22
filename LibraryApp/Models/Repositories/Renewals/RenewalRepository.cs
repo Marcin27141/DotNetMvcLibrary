@@ -2,6 +2,7 @@
 using LibraryApp.Models.Database.Entities;
 using LibraryApp.Models.Repositories.Renewals.RenewalCreator;
 using LibraryApp.Models.Repositories.Renewals.RenewalErrors;
+using LibraryApp.Models.Repositories.Renewals.RenewalSpecification;
 using LibraryApp.Models.Repositories.Renewals.RenewalValidators;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,25 +11,29 @@ namespace LibraryApp.Models.Repositories.Renewals
     public class RenewalRepository : IRenewalRepository
     {
         private readonly LibraryDbContext _context;
+        private readonly IRenewalSpecification _renewalSpecification;
         private readonly IRenewalCreator _renewalCreator;
         private readonly IEnumerable<IRenewalValidator> _renewalValidators;
 
         public RenewalRepository(
             LibraryDbContext context,
+            IRenewalSpecification renewalSpecification,
             IRenewalCreator renewalCreator,
             IEnumerable<IRenewalValidator> renewalValidators)
         {
             _context = context;
+            _renewalSpecification = renewalSpecification;
             _renewalCreator = renewalCreator;
             _renewalValidators = renewalValidators;
         }
 
         public int GetRemainingRenewals(Rental rental)
         {
-            return 2 - rental.Renewals.Count; //TODO
+            var allowed = _renewalSpecification.MaxRenewalsPerRental;
+            return allowed - rental.Renewals.Count;
         }
 
-        public int GetRenewalSpan() => _renewalCreator.GetRenewalSpan();
+        public int GetRenewalSpan() => _renewalSpecification.RenewalSpanInDays;
 
         public RenewalValidityCheck IsValidForRenewal(Rental rental)
         {
