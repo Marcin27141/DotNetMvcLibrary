@@ -21,6 +21,8 @@ namespace LibraryApp.Models.Repositories.Accounts
         private readonly ILibraryEmailSender _emailSender;
         private readonly LibraryDbContext _context;
 
+        public int ActivationLinkValidityInHours => 48;
+
         public AccountRepository(
             UserManager<LibraryUser> userManager,
             IAccountValidator accountValidator,

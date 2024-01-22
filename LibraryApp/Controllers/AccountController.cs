@@ -32,7 +32,7 @@ namespace LibraryApp.Controllers
 
         public IActionResult LinkSent()
         {
-            return View();
+            return View(new LinkSentViewModel(_accountRepository.ActivationLinkValidityInHours));
         }
 
         public async Task<IActionResult> Register()

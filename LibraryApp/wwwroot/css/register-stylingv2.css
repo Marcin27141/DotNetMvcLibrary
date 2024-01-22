@@ -27,6 +27,18 @@
     height: 20px;
 }
 
+.accept-terms-div a {
+    color: rgb(50, 50, 50);
+}
+
+.accept-terms-div a:hover {
+    color: white;
+}
+
+.accept-terms-div a:visited {
+    color: rgb(100, 100, 100);
+}
+
 #registerSubmit {
     background-color: rgb(50, 50, 50);
     color: white;

@@ -1,7 +1,18 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model LibraryApp.Models.ViewModels.LinkSentViewModel
 @{
+    ViewData["Title"] = "Confirm your email";
 }
 
-<h1>Activation link was sent on your email</h1>
+@section styles {
+    <link rel="Stylesheet" href="~/css/link-sent-styling.css" />
+}
+
+<div class="outer-div d-flex flex-column justify-content-center align-items-center">
+    <div class="inner-div">
+        <h1 class="text-center">One more step!</h1>
+        <p class="upper-line text-center">We have sent you a confirmation link on your email address.</p>
+        <p class="lower-line text-center">Clicking it will finalize Your registration process.</p>
+        <p class="text-center">Activation link validity time: @Model.EmailValidityInHours hours.</p>
+    </div>
+</div>
+
