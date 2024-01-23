@@ -25,6 +25,9 @@ namespace LibraryApp.Models.Repositories.Rentals
         {
             return _context.Rentals
                 .Include(r => r.Reader)
+                    .ThenInclude(r => r.Penalties)
+                        .ThenInclude(p => p.Payment)
+                .Include(r => r.Reader)
                 .Include(r => r.BookCopy)
                     .ThenInclude(bc => bc.Book)
                 .Include(r => r.Renewals)
