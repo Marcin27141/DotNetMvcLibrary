@@ -20,9 +20,9 @@ namespace LibraryApp.Models.Accounts.AccountVerifiers
                 AccountValidationResult.Success();
         }
 
-        private void AddErrorsIfInvalid(string subject, string property)
+        private void AddErrorsIfInvalid(string? subject, string property)
         {
-            if (!IsProperlyCapitalized(subject) || !ContainsValidCharacters(subject))
+            if (subject.IsNullOrEmpty() || !IsProperlyCapitalized(subject) || !ContainsValidCharacters(subject))
                 _errors.Add(new AccountValidationError(property, "This is not a valid format"));
         }
 
