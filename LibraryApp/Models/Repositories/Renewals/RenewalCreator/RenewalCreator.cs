@@ -1,6 +1,6 @@
 ﻿using LibraryApp.Models.Database;
 using LibraryApp.Models.Database.Entities;
-using LibraryApp.Models.Repositories.Renewals.RenewalSpecification;
+using LibraryApp.Models.Specifications.RenewalSpecification;
 
 namespace LibraryApp.Models.Repositories.Renewals.RenewalCreator
 {

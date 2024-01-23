@@ -1,7 +1,7 @@
 ﻿using LibraryApp.Models.Database;
 using LibraryApp.Models.Database.Entities;
 using LibraryApp.Models.Repositories.Renewals.RenewalErrors;
-using LibraryApp.Models.Repositories.Renewals.RenewalSpecification;
+using LibraryApp.Models.Specifications.RenewalSpecification;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryApp.Models.Repositories.Renewals.RenewalValidators
@@ -27,7 +27,7 @@ namespace LibraryApp.Models.Repositories.Renewals.RenewalValidators
                 return RenewalValidationResult.Fail(RenewalError.InvalidRentalError());
 
             int unpaidPenalties = reader.Penalties.Where(p => p.Payment is null).Count();
-            return unpaidPenalties < _renewalSpecification.AllowedPenalties ?
+            return unpaidPenalties <= _renewalSpecification.AllowedPenalties ?
                 RenewalValidationResult.Success() :
                 RenewalValidationResult.Fail(GenerateRenewalError(unpaidPenalties));
         }

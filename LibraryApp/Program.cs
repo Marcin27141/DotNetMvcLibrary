@@ -1,18 +1,17 @@
+using LibraryApp.Models.Accounts;
+using LibraryApp.Models.Accounts.AccountValidator;
+using LibraryApp.Models.Accounts.AccountVerifiers;
 using LibraryApp.Models.Database;
 using LibraryApp.Models.Database.Entities;
 using LibraryApp.Models.Database.Generators;
-using LibraryApp.Models.Database.Generators.Books;
-using LibraryApp.Models.Database.Generators.BooksCopies;
-using LibraryApp.Models.Repositories.Accounts;
-using LibraryApp.Models.Repositories.Accounts.AccountValidator;
-using LibraryApp.Models.Repositories.Accounts.AccountVerifiers;
 using LibraryApp.Models.Repositories.EmailSender;
+using LibraryApp.Models.Repositories.Readers;
 using LibraryApp.Models.Repositories.Renewals;
 using LibraryApp.Models.Repositories.Renewals.RenewalCreator;
-using LibraryApp.Models.Repositories.Renewals.RenewalSpecification;
 using LibraryApp.Models.Repositories.Renewals.RenewalValidators;
 using LibraryApp.Models.Repositories.Rentals;
 using LibraryApp.Models.Specifications.Passwords;
+using LibraryApp.Models.Specifications.RenewalSpecification;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -56,6 +55,7 @@ builder.Services.AddScoped<IRenewalValidator, RenewalLimitValidator>();
 builder.Services.AddScoped<IRenewalCreator, RenewalCreator>();
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IReaderRepository, ReaderRepository>();
 builder.Services.AddScoped<IDatabaseGenerator, DatabaseGenerator>();
 builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 builder.Services.AddScoped<IRenewalRepository, RenewalRepository>();

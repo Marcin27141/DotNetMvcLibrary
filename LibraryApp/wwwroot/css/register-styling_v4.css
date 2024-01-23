@@ -1,0 +1,48 @@
+﻿.register-title {
+    padding-block: 15px;
+}
+
+.register-column {
+    background-color: lightblue;
+    border-radius: 30px;
+    padding-bottom: 50px;
+}
+
+.outer-terms-div {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    padding-left: 10px;
+}
+
+.accept-terms-div {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.accept-terms-div label {
+    font-size: large;
+    margin-left: 10px;
+}
+
+.accept-terms-div input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
+.accept-terms-div a {
+    color: darkblue;
+}
+
+.accept-terms-div a:hover {
+    color: white;
+}
+
+.accept-terms-div a:visited {
+    color: darkslateblue;
+}
+
+#registerSubmit {
+    background-color: yellowgreen;
+    color: white;
+}

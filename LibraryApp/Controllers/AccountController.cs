@@ -6,9 +6,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Text;
 using LibraryApp.Models.Database.Entities;
-using LibraryApp.Models.Repositories.Accounts;
 using System.Data;
 using LibraryApp.Models.ViewModels;
+using LibraryApp.Models.Accounts;
+using LibraryApp.Models.Repositories.Readers;
 
 namespace LibraryApp.Controllers
 {
@@ -35,7 +36,7 @@ namespace LibraryApp.Controllers
             return View(new LinkSentViewModel(_accountRepository.ActivationLinkValidityInHours));
         }
 
-        public async Task<IActionResult> Register()
+        public async Task<IActionResult> RegisterReader([FromServices] IReaderRepository readerRepository)
         {
        
             if (ModelState.IsValid)
@@ -45,8 +46,9 @@ namespace LibraryApp.Controllers
                 {
                     var user = CreateUser();
                     Reader reader = CreateReader(user);
-                    var wasCreated = await TryCreateReader(reader);
-                    if (wasCreated) RedirectToAction(nameof(LinkSent));
+                    var wasCreated = await TryCreateReader(reader, readerRepository);
+                    if (wasCreated)
+                        return RedirectToAction(nameof(LinkSent));
                 }
                 else AddValidationErrorsToModelState(userValidation.Errors);
             }
@@ -54,9 +56,9 @@ namespace LibraryApp.Controllers
             return View(nameof(Index));
         }
 
-        private async Task<bool> TryCreateReader(Reader reader)
+        private async Task<bool> TryCreateReader(Reader reader, IReaderRepository readerRepository)
         {
-            var creationResult = await _accountRepository.CreateReaderAsync(reader, Input.Password);
+            var creationResult = await readerRepository.CreateReaderAsync(reader, Input.Password);
 
             if (creationResult.Succeeded)
             {
@@ -81,7 +83,7 @@ namespace LibraryApp.Controllers
                 pageHandler: null,
                 values: new { area = "Identity", userId = user.Id, code },
                 protocol: Request.Scheme);
-            return HtmlEncoder.Default.Encode(link);
+            return HtmlEncoder.Default.Encode(link ?? "Contact our support team");
         }
 
         private void AddIdentityErrorsToModelState(IEnumerable<IdentityError> errors)
