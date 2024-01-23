@@ -30,7 +30,7 @@ namespace LibraryApp.Models.Repositories.Renewals
         public int GetRemainingRenewals(Rental rental)
         {
             var allowed = _renewalSpecification.MaxRenewalsPerRental;
-            return allowed - rental.Renewals.Count;
+            return Math.Max(0, allowed - rental.Renewals.Count);
         }
 
         public int GetRenewalSpan() => _renewalSpecification.RenewalSpanInDays;
