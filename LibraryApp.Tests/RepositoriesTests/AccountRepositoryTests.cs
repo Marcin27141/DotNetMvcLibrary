@@ -14,6 +14,7 @@ using System.IO;
 using Moq;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 
 namespace LibraryApp.Tests.RepositoriesTests
 {
@@ -22,10 +23,10 @@ namespace LibraryApp.Tests.RepositoriesTests
         private LibraryDbContext _context;
         private UserManager<LibraryUser> _userManager;
         private RoleManager<IdentityRole> _roleManager;
-        private IAccountValidator _accountValidator;
         private ILibraryEmailSender _emailSender;
 
         private static string _existingRole = "Reader";
+        private static string _roleToBeAdded = "Reader2";
         private static LibraryUser _testReadUser = GetTestUser("test1@wp.pl");
         private LibraryUser _testWriteUser = GetTestUser("test2@wp.pl");
         public AccountRepositoryTests()
@@ -34,12 +35,6 @@ namespace LibraryApp.Tests.RepositoriesTests
             _emailSender = A.Fake<ILibraryEmailSender>();
             _userManager = GetUserManager();
             _roleManager = GetRoleManager();
-
-            if (!_roleManager.RoleExistsAsync(_existingRole).Result)
-                _roleManager.CreateAsync(new IdentityRole(_existingRole)).Wait();
-            if (_context.Users.Find(_testReadUser.Id) == null)
-                _context.Users.Add(_testReadUser);
-            _context.SaveChanges();
         }
 
         private RoleManager<IdentityRole> GetRoleManager()
@@ -71,6 +66,27 @@ namespace LibraryApp.Tests.RepositoriesTests
             return user;
         }
 
+        private void AddRole(string role)
+        {
+            var roleExists = _roleManager.RoleExistsAsync(role).Result;
+            if (!roleExists)
+            {
+                _roleManager.CreateAsync(new IdentityRole(role)).Wait();
+                _context.SaveChanges();
+            }
+        }
+
+        private async Task AddTestUserAsync()
+        {
+            if (_context.Users.Find(_testReadUser.Id) == null)
+            {
+                await _context.Users.AddAsync(_testReadUser);
+                await _context.SaveChangesAsync();
+                await _userManager.AddToRoleAsync(_testReadUser, _existingRole);
+                await _context.SaveChangesAsync();
+            }
+        }
+
         private AccountRepository GetAccountRepository() =>
             new AccountRepository(_userManager, _roleManager, _emailSender, _context);
 
@@ -92,13 +108,14 @@ namespace LibraryApp.Tests.RepositoriesTests
         public async Task AccountRepository_AddToRoleAsync_AddedToRole()
         {
             //Arrange
+            AddRole(_roleToBeAdded);
             var repo = GetAccountRepository();
 
             //Act
-            await repo.AddToRoleAsync(_testReadUser, _existingRole);
+            await repo.AddToRoleAsync(_testReadUser, _roleToBeAdded);
 
             //Assert
-            var isInRole = await _userManager.IsInRoleAsync(_testReadUser, _existingRole);
+            var isInRole = await _userManager.IsInRoleAsync(_testReadUser, _roleToBeAdded);
             isInRole.Should().Be(true);
         }
 
@@ -107,69 +124,45 @@ namespace LibraryApp.Tests.RepositoriesTests
         {
             //Arrange
             var repo = GetAccountRepository();
+            var nonexistingRole = "NonexistingRole";
 
             //Act
-            await repo.AddToRoleAsync(_testReadUser, "NonexistingRole");
+            await repo.AddToRoleAsync(_testReadUser, nonexistingRole);
 
             //Assert
-            var isInRole = await _userManager.IsInRoleAsync(_testReadUser, _existingRole);
+            var isInRole = await _userManager.IsInRoleAsync(_testReadUser, nonexistingRole);
             isInRole.Should().Be(false);
         }
 
-        //[Theory]
-        //[InlineData(0, 2, 2)]
-        //[InlineData(1, 4, 3)]
-        //[InlineData(20, 41, 21)]
-        //public void RenewalRepository_GetRemainingRenewals_CorrectValue(int currentRenewals, int maxRenewals, int expected)
-        //{
-        //    //Arrange
-        //    A.CallTo(() => _renewalSpecification.MaxRenewalsPerRental).Returns(maxRenewals);
-        //    var repo = GetRenewalRepository();
-        //    var rental = new Rental() { Renewals = Enumerable.Repeat(new Renewal(), currentRenewals).ToList() };
+        [Fact]
+        public async Task AccountRepository_GetUserInRole_GetNonNullUser()
+        {
+            //Arrange
+            AddRole(_existingRole);
+            AddTestUserAsync().Wait();
+            var repo = GetAccountRepository();
 
-        //    //Act
-        //    int remaining = repo.GetRemainingRenewals(rental);
+            //Act
+            var user = await repo.GetUserInRole(_testReadUser.UserName, _existingRole);
 
-        //    //Assert
-        //    remaining.Should().Be(expected);
-        //}
+            //Assert
+            user.Should().NotBeNull();
+        }
 
-        //[Fact]
-        //public void RenewalRepository_IsValidForRenewal_TrueWhenNoValidators()
-        //{
-        //    //Arrange
-        //    var repo = GetRenewalRepository();
-        //    var rental = new Rental();
+        [Fact]
+        public async Task AccountRepository_GetUserInRole_GetNullIfRoleIsAbsent()
+        {
+            //Arrange
+            AddRole(_existingRole);
+            AddRole(_roleToBeAdded);
+            AddTestUserAsync().Wait();
+            var repo = GetAccountRepository();
 
-        //    //Act
-        //    var validityCheck = repo.IsValidForRenewal(rental);
+            //Act
+            var user = await repo.GetUserInRole(_testReadUser.UserName, _roleToBeAdded);
 
-        //    //Assert
-        //    validityCheck.IsValidForRenewal.Should().Be(true);
-        //}
-
-        //[Theory]
-        //[InlineData(30)]
-        //[InlineData(10)]
-        //[InlineData(1)]
-        //[InlineData(100)]
-        //public void RenewalRepository_RenewRental_CorrectlyRenewed(int renewalSpan)
-        //{
-        //    //Arrange
-        //    A.CallTo(() => _renewalSpecification.RenewalSpanInDays).Returns(renewalSpan);
-        //    var repo = GetRenewalRepository();
-        //    var rental = _context.Rentals.Find(TEST_RENTAL_ID);
-        //    var previousDeadline = rental?.CurrentDeadline;
-        //    A.CallTo(() => _renewalCreator.CreateRenewal(rental)).Returns(
-        //        new Renewal() { NewReturnDeadline = previousDeadline.Value.AddDays(renewalSpan)}
-        //        );
-
-        //    //Act
-        //    var validityCheck = repo.RenewRental(TEST_RENTAL_ID);
-
-        //    //Assert
-        //    var newDeadline = _context.Rentals.Find(TEST_RENTAL_ID)?.CurrentDeadline;
-        //    newDeadline.Should().Be(previousDeadline.Value.AddDays(renewalSpan));
-        //}
+            //Assert
+            user.Should().BeNull();
+        }
     }
 }

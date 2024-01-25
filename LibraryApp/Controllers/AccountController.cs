@@ -19,8 +19,7 @@ namespace LibraryApp.Controllers
         private readonly IAccountRepository _accountRepository;
         private readonly IAccountValidator _accountValidator;
 
-        [BindProperty]
-        public RegisterViewModel Input { get; set; }
+        private RegisterViewModel _input;
 
 
         public AccountController(
@@ -41,12 +40,14 @@ namespace LibraryApp.Controllers
             return View(new LinkSentViewModel(_accountRepository.ActivationLinkValidityInHours));
         }
 
-        public async Task<IActionResult> RegisterReader([FromServices] IReaderRepository readerRepository)
+        public async Task<IActionResult> RegisterReader(
+            [FromForm] RegisterViewModel input,
+            [FromServices] IReaderRepository readerRepository)
         {
-       
+            _input = input;
             if (ModelState.IsValid)
             {
-                var userValidation = _accountValidator.Validate(Input);
+                var userValidation = _accountValidator.Validate(input);
                 if (userValidation.IsSuccess)
                 {
                     var user = CreateUser();
@@ -63,7 +64,7 @@ namespace LibraryApp.Controllers
 
         private async Task<bool> TryCreateReader(Reader reader, IReaderRepository readerRepository)
         {
-            var creationResult = await readerRepository.CreateReaderAsync(reader, Input.Password);
+            var creationResult = await readerRepository.CreateReaderAsync(reader, _input.Password);
 
             if (creationResult.Succeeded)
             {
@@ -119,11 +120,11 @@ namespace LibraryApp.Controllers
         private LibraryUser CreateUser()
         {
             var user = Activator.CreateInstance<LibraryUser>();
-            user.Email = Input.Email;
-            user.UserName = Input.Email;
-            user.FirstName = Input.FirstName;
-            user.LastName = Input.LastName;
-            user.Birthday = Input.Birthday;
+            user.Email = _input.Email;
+            user.UserName = _input.Email;
+            user.FirstName = _input.FirstName;
+            user.LastName = _input.LastName;
+            user.Birthday = _input.Birthday;
             user.CreationDate = DateOnly.FromDateTime(DateTime.Today);
             user.Status = "Inactive";
             user.Role = "Reader";
