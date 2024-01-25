@@ -7,7 +7,6 @@ namespace LibraryApp.Models.Accounts
     public interface IAccountRepository
     {
         int ActivationLinkValidityInHours { get; }
-        AccountValidationResult ValidateUser(RegisterViewModel user);
         Task<string> GenerateEmailConfirmationTokenAsync(LibraryUser user);
         Task<IdentityResult> CreateUserAsync(LibraryUser user, string password);
         Task SendConfirmationLinkAsync(LibraryUser user, string link);

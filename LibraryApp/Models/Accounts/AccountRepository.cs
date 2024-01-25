@@ -18,7 +18,7 @@ namespace LibraryApp.Models.Accounts
     public class AccountRepository : IAccountRepository
     {
         private readonly UserManager<LibraryUser> _userManager;
-        private readonly IAccountValidator _accountValidator;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILibraryEmailSender _emailSender;
         private readonly LibraryDbContext _context;
 
@@ -26,12 +26,12 @@ namespace LibraryApp.Models.Accounts
 
         public AccountRepository(
             UserManager<LibraryUser> userManager,
-            IAccountValidator accountValidator,
+            RoleManager<IdentityRole> roleManager,
             ILibraryEmailSender emailSender,
             LibraryDbContext context)
         {
             _userManager = userManager;
-            _accountValidator = accountValidator;
+            _roleManager = roleManager;
             _emailSender = emailSender;
             _context = context;
         }
@@ -55,11 +55,11 @@ namespace LibraryApp.Models.Accounts
             return _userManager.GenerateEmailConfirmationTokenAsync(user);
         }
 
-        public AccountValidationResult ValidateUser(RegisterViewModel user) => _accountValidator.Validate(user);
-
         public async Task AddToRoleAsync(LibraryUser user, string role)
         {
-            await _userManager.AddToRoleAsync(user, role);
+            var roleExists = await _roleManager.RoleExistsAsync(role);
+            if (roleExists)
+                await _userManager.AddToRoleAsync(user, role);
         }
         public async Task<LibraryUser?> GetUserInRole(string username, string role)
         {

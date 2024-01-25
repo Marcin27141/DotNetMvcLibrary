@@ -10,20 +10,25 @@ using System.Data;
 using LibraryApp.Models.ViewModels;
 using LibraryApp.Models.Accounts;
 using LibraryApp.Models.Repositories.Readers;
+using LibraryApp.Models.Accounts.AccountValidator;
 
 namespace LibraryApp.Controllers
 {
     public class AccountController : Controller
     {
         private readonly IAccountRepository _accountRepository;
+        private readonly IAccountValidator _accountValidator;
 
         [BindProperty]
         public RegisterViewModel Input { get; set; }
 
 
-        public AccountController(IAccountRepository accountRepository)
+        public AccountController(
+            IAccountRepository accountRepository,
+            IAccountValidator accountValidator)
         {
             _accountRepository = accountRepository;
+            _accountValidator = accountValidator;
         }
 
         public IActionResult Index()
@@ -41,7 +46,7 @@ namespace LibraryApp.Controllers
        
             if (ModelState.IsValid)
             {
-                var userValidation = _accountRepository.ValidateUser(Input);
+                var userValidation = _accountValidator.Validate(Input);
                 if (userValidation.IsSuccess)
                 {
                     var user = CreateUser();
