@@ -15,6 +15,7 @@ using LibraryApp.Controllers;
 using LibraryApp.Models.Repositories.Rentals;
 using Microsoft.AspNetCore.Mvc;
 using LibraryApp.Models.ViewModels;
+using LibraryApp.Models.Repositories.Renewals.RenewalErrors;
 
 namespace LibraryApp.Tests.ControllersTests
 {
@@ -66,6 +67,70 @@ namespace LibraryApp.Tests.ControllersTests
                 Assert.Equal(model?.Rental, rental);
             }
                 
+        }
+
+        [Fact]
+        public async Task RenewalController_Renew_NotFoundOnNonExisting()
+        {
+            //Arrange
+            int rentalId = -1;
+            A.CallTo(() => _rentalRepository.GetRentalById(rentalId)).Returns(null);
+            var controller = GetRenewalController();
+
+            //Act
+            var actionResult = await controller.Renew(rentalId);
+
+            //Assert
+            Assert.Equal(typeof(NotFoundResult), actionResult.GetType());
+        }
+
+        [Fact]
+        public async Task RenewalController_Renew_RedirectToSuccess()
+        {
+            //Arrange
+            var rental = new Rental() { RentalId = -1, ReaderId = Guid.NewGuid().ToString(), BookCopyId = -1 };
+            A.CallTo(() => _rentalRepository.GetRentalById(rental.RentalId)).Returns(rental);
+            A.CallTo(() => _renewalRepository.IsValidForRenewal(rental)).Returns(RenewalValidityCheck.Success());
+            var controller = GetRenewalController();
+
+            //Act
+            var actionResult = await controller.Renew(rental.RentalId);
+
+            //Assert
+            Assert.Equal(typeof(RedirectToActionResult), actionResult.GetType());
+            if (actionResult is RedirectToActionResult)
+            {
+                var redirectResult = actionResult as RedirectToActionResult;
+                Assert.Equal(nameof(RenewalController.Success), redirectResult?.ActionName);
+                var rentalIdRouteValue = redirectResult?.RouteValues?["rentalId"];
+                rentalIdRouteValue.Should().Be(rental.RentalId);
+            }
+
+        }
+
+        [Theory]
+        [InlineData(typeof(RenewalsLimitReachedError), nameof(RenewalController.RenewalsLimit))]
+        [InlineData(typeof(HasUnpaidPenaltiesError), nameof(RenewalController.UnpaidPenalties))]
+        public async Task RenewalController_Renew_RedirectToErrorView(Type errorType, string expectedAction)
+        {
+            //Arrange
+            var rental = new Rental() { RentalId = -1, ReaderId = Guid.NewGuid().ToString(), BookCopyId = -1 };
+            A.CallTo(() => _rentalRepository.GetRentalById(rental.RentalId)).Returns(rental);
+            A.CallTo(() => _renewalRepository.IsValidForRenewal(rental)).Returns(
+                RenewalValidityCheck.Fail([(RenewalError)Activator.CreateInstance(errorType)]));
+            var controller = GetRenewalController();
+
+            //Act
+            var actionResult = await controller.Renew(rental.RentalId);
+
+            //Assert
+            Assert.Equal(typeof(RedirectToActionResult), actionResult.GetType());
+            if (actionResult is RedirectToActionResult)
+            {
+                var redirectResult = actionResult as RedirectToActionResult;
+                Assert.Equal(expectedAction, redirectResult?.ActionName);
+            }
+
         }
     }
 }
