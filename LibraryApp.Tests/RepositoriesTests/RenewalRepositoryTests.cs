@@ -1,11 +1,10 @@
 ﻿using FakeItEasy;
 using LibraryApp.Models.Database;
-using LibraryApp.Models.Repositories.Renewals.RenewalCreator;
-using LibraryApp.Models.Repositories.Renewals.RenewalValidators;
-using LibraryApp.Models.Repositories.Renewals;
 using LibraryApp.Models.Specifications.RenewalSpecification;
 using LibraryApp.Models.Database.Entities;
 using FluentAssertions;
+using LibraryApp.Models.Renewals.Contracts;
+using LibraryApp.Models.Repositories.Renewals.RenewalRepositories;
 
 namespace LibraryApp.Tests.RepositoriesTests
 {

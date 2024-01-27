@@ -1,18 +1,5 @@
-﻿using FakeItEasy;
-using FluentAssertions;
-using LibraryApp.Models.Database;
-using LibraryApp.Models.Database.Entities;
-using LibraryApp.Models.Repositories.Renewals.RenewalCreator;
-using LibraryApp.Models.Repositories.Renewals.RenewalValidators;
-using LibraryApp.Models.Repositories.Renewals;
-using LibraryApp.Models.Specifications.RenewalSpecification;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentAssertions;
 using LibraryApp.Models.Accounts.AccountVerifiers;
-using System.Xml.Serialization;
 using LibraryApp.Models.ViewModels;
 
 namespace LibraryApp.Tests.ValidatorsTest.AccountValidatorsTests
@@ -25,14 +12,17 @@ namespace LibraryApp.Tests.ValidatorsTest.AccountValidatorsTests
         [InlineData("Marcin", true)]
         [InlineData("Adam", true)]
         [InlineData("", false)]
+        [InlineData("     ", false)]
+        [InlineData(null, false)]
         [InlineData("marcin", false)]
-        [InlineData("aDam", false)]
+        [InlineData("aDam", false)]        
         [InlineData("MARCIN", false)]
         [InlineData("MarciN", false)]
         [InlineData("Pi0tr", false)]
         [InlineData("Adam#", false)]
+        [InlineData("A d a m", false)]
         [InlineData("Adam Bartosz", false)]
-        public void NameFormatVerifier_VerifyAccount_CorrectFormat(string name, bool expected)
+        public void NameFormatVerifier_VerifyAccount_CorrectFormat(string? name, bool expected)
         {
             //Arrange
             var validator = GetNameVerifier();

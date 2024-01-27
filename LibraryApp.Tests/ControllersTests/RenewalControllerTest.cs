@@ -1,21 +1,13 @@
 ﻿using FakeItEasy;
 using FluentAssertions;
 using LibraryApp.Models.Database.Entities;
-using LibraryApp.Models.Database;
-using LibraryApp.Models.Repositories.Renewals.RenewalCreator;
-using LibraryApp.Models.Repositories.Renewals.RenewalValidators;
-using LibraryApp.Models.Repositories.Renewals;
-using LibraryApp.Models.Specifications.RenewalSpecification;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LibraryApp.Controllers;
 using LibraryApp.Models.Repositories.Rentals;
 using Microsoft.AspNetCore.Mvc;
 using LibraryApp.Models.ViewModels;
-using LibraryApp.Models.Repositories.Renewals.RenewalErrors;
+using LibraryApp.Models.Renewals.RenewalErrors;
+using LibraryApp.Models.Renewals.Contracts;
+using LibraryApp.Models.Repositories.Renewals.Contracts;
 
 namespace LibraryApp.Tests.ControllersTests
 {

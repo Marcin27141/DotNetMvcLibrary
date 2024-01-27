@@ -1,20 +1,11 @@
 ﻿using FakeItEasy;
 using LibraryApp.Models.Database;
-using LibraryApp.Models.Repositories.Renewals.RenewalCreator;
-using LibraryApp.Models.Repositories.Renewals.RenewalValidators;
-using LibraryApp.Models.Repositories.Renewals;
-using LibraryApp.Models.Specifications.RenewalSpecification;
 using LibraryApp.Models.Database.Entities;
 using FluentAssertions;
-using LibraryApp.Models.Accounts;
 using Microsoft.AspNetCore.Identity;
-using LibraryApp.Models.Accounts.AccountValidator;
-using LibraryApp.Models.Repositories.EmailSender;
-using System.IO;
-using Moq;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
+using LibraryApp.Models.EmailSender;
+using LibraryApp.Models.Repositories.Accounts;
 
 namespace LibraryApp.Tests.RepositoriesTests
 {

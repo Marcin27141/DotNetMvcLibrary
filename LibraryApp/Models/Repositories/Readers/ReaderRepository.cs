@@ -1,8 +1,7 @@
-﻿using LibraryApp.Models.Accounts;
-using LibraryApp.Models.Database;
+﻿using LibraryApp.Models.Database;
 using LibraryApp.Models.Database.Entities;
+using LibraryApp.Models.Repositories.Accounts;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace LibraryApp.Models.Repositories.Readers
 {

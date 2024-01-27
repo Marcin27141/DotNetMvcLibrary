@@ -1,6 +1,4 @@
-﻿using Humanizer;
-using LibraryApp.Models.Accounts;
-using LibraryApp.Models.Database.Entities;
+﻿using LibraryApp.Models.Database.Entities;
 using LibraryApp.Models.Repositories.Readers;
 
 

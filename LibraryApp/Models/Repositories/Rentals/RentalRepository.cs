@@ -1,6 +1,5 @@
 ﻿using LibraryApp.Models.Database;
 using LibraryApp.Models.Database.Entities;
-using LibraryApp.Models.Repositories.Renewals;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryApp.Models.Repositories.Rentals

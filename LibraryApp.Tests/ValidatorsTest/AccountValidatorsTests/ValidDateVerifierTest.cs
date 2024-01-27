@@ -1,18 +1,5 @@
-﻿using FakeItEasy;
-using FluentAssertions;
-using LibraryApp.Models.Database;
-using LibraryApp.Models.Database.Entities;
-using LibraryApp.Models.Repositories.Renewals.RenewalCreator;
-using LibraryApp.Models.Repositories.Renewals.RenewalValidators;
-using LibraryApp.Models.Repositories.Renewals;
-using LibraryApp.Models.Specifications.RenewalSpecification;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentAssertions;
 using LibraryApp.Models.Accounts.AccountVerifiers;
-using System.Xml.Serialization;
 using LibraryApp.Models.ViewModels;
 
 namespace LibraryApp.Tests.ValidatorsTest.AccountValidatorsTests

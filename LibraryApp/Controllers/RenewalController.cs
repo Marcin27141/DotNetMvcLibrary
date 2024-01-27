@@ -1,11 +1,14 @@
-﻿using LibraryApp.Models.Repositories.Renewals;
-using LibraryApp.Models.Repositories.Renewals.RenewalErrors;
+﻿using LibraryApp.Models.Renewals.Contracts;
+using LibraryApp.Models.Renewals.RenewalErrors;
+using LibraryApp.Models.Repositories.Renewals.Contracts;
 using LibraryApp.Models.Repositories.Rentals;
 using LibraryApp.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryApp.Controllers
 {
+    [Authorize(Policy = "IsReader")]
     public class RenewalController : Controller
     {
         private readonly IRenewalRepository _renewalRepository;

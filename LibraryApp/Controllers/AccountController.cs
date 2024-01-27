@@ -1,16 +1,14 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Text;
 using LibraryApp.Models.Database.Entities;
 using System.Data;
 using LibraryApp.Models.ViewModels;
-using LibraryApp.Models.Accounts;
 using LibraryApp.Models.Repositories.Readers;
-using LibraryApp.Models.Accounts.AccountValidator;
+using LibraryApp.Models.Accounts.Contracts;
+using LibraryApp.Models.Repositories.Accounts;
 
 namespace LibraryApp.Controllers
 {
@@ -30,16 +28,18 @@ namespace LibraryApp.Controllers
             _accountValidator = accountValidator;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        [HttpGet]
+        public IActionResult Index() => RedirectToAction(nameof(RegisterReader));
 
         public IActionResult LinkSent()
         {
             return View(new LinkSentViewModel(_accountRepository.ActivationLinkValidityInHours));
         }
 
+        [HttpGet]
+        public IActionResult RegisterReader() => View();
+
+        [HttpPost]
         public async Task<IActionResult> RegisterReader(
             [FromForm] RegisterViewModel input,
             [FromServices] IReaderRepository readerRepository)
@@ -50,34 +50,29 @@ namespace LibraryApp.Controllers
                 var userValidation = _accountValidator.Validate(input);
                 if (userValidation.IsSuccess)
                 {
-                    var user = CreateUser();
-                    Reader reader = CreateReader(user);
-                    var wasCreated = await TryCreateReader(reader, readerRepository);
-                    if (wasCreated)
+                    Reader reader = CreateReader();
+                    var creationResult = await readerRepository.CreateReaderAsync(reader, _input.Password);
+                    await HandleCreationResult(creationResult, reader);
+                    if (creationResult.Succeeded)
                         return RedirectToAction(nameof(LinkSent));
                 }
                 else AddValidationErrorsToModelState(userValidation.Errors);
             }
 
-            return View(nameof(Index));
+            return View();
         }
 
-        private async Task<bool> TryCreateReader(Reader reader, IReaderRepository readerRepository)
+        private async Task HandleCreationResult(IdentityResult creationResult, Reader reader)
         {
-            var creationResult = await readerRepository.CreateReaderAsync(reader, _input.Password);
-
             if (creationResult.Succeeded)
-            {
-                var confirmLink = await GetConfirmLinkAsync(reader.LibraryUser);
+                await SendEmail(reader);
+            else AddIdentityErrorsToModelState(creationResult.Errors);
+        }
 
-                await _accountRepository.SendConfirmationLinkAsync(reader.LibraryUser, confirmLink);
-                return true;
-            }
-            else
-            {
-                AddIdentityErrorsToModelState(creationResult.Errors);
-                return false;
-            }
+        private async Task SendEmail(Reader reader)
+        {
+            var confirmLink = await GetConfirmLinkAsync(reader.LibraryUser);
+            await _accountRepository.SendConfirmationLinkAsync(reader.LibraryUser, confirmLink);
         }
 
         private async Task<string> GetConfirmLinkAsync(LibraryUser user)
@@ -108,11 +103,11 @@ namespace LibraryApp.Controllers
             }
         }
 
-        private static Reader CreateReader(LibraryUser user)
+        private Reader CreateReader()
         {
             return new()
             {
-                LibraryUser = user,
+                LibraryUser = CreateUser(),
                 IsActive = false
             };
         }
@@ -128,8 +123,6 @@ namespace LibraryApp.Controllers
             user.CreationDate = DateOnly.FromDateTime(DateTime.Today);
             user.Status = "Inactive";
             user.Role = "Reader";
-            //for testing
-            user.EmailConfirmed = true;
 
             return user;
         }

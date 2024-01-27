@@ -1,10 +1,6 @@
-﻿using LibraryApp.Models.Accounts;
-using LibraryApp.Models.Database.Entities;
+﻿using LibraryApp.Models.Accounts.Contracts;
 using LibraryApp.Models.Specifications.Passwords;
 using LibraryApp.Models.ViewModels;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LibraryApp.Models.Accounts.AccountVerifiers
 {

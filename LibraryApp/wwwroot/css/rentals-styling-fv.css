@@ -1,0 +1,39 @@
+﻿.card {
+    background-color: lightblue
+}
+
+.card-title {
+    font-size: 30px;
+}
+
+.author-text {
+    font-size: 20px;
+}
+
+.deadline-text {
+    font-size: 18px;
+}
+
+button {
+    background-color: lightseagreen
+}
+
+button:hover {
+    box-shadow: 2px 2px #888888;
+}
+
+.rental-buttons {
+    height: 100%;
+    padding-right: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.rental-buttons button {
+    width: 100%;
+    font-size: 18px;
+    border-radius: 5px;
+    padding-right: 15px;
+    padding-left: 15px;
+}

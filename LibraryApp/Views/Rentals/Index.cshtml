@@ -4,7 +4,7 @@
 }
 
 @section styles {
-    <link rel="Stylesheet" href="~/css/rentals-styling.css" />
+    <link rel="Stylesheet" href="~/css/rentals-styling-fv.css" />
 }
 
 @if (Model.Any())
@@ -24,10 +24,10 @@
                     </div>
                         <div class="col-lg-4 col-md-4">
                             <div class="rental-buttons">
-                                <button>Details</button>
-                                <form method="get" asp-action="Renew">
+                                <button class="details-button">Details</button>
+                                <form method="get" asp-controller="Renewal" asp-action="Index">
                                     <input name="rentalId" value="@rental.RentalId" hidden />
-                                    <button type="submit" style="width: 100%;">Renew</button>
+                                    <button class="renew-button" type="submit">Renew</button>
                                 </form>
                             </div>
                         </div>
@@ -38,7 +38,7 @@
     </div>
 } else
 {
-    <div class="d-flex flex-column justify-content-center align-items-center" style="height: 75vh">
+    <div class="no-rentals-info-div d-flex flex-column justify-content-center align-items-center" style="height: 75vh">
         <h2 class="text-center">You don't have any rentals</h2>
     </div>
 }

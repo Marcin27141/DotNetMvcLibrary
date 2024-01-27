@@ -1,9 +1,6 @@
 ﻿using LibraryApp.Models.Database.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
-using System;
-using Microsoft.Extensions.Hosting;
 
 namespace LibraryApp.Models.Database
 {
@@ -37,9 +34,6 @@ namespace LibraryApp.Models.Database
             .HasOne(p => p.Penalty)
             .WithOne(p => p.Payment)
             .HasForeignKey<Payment>(p => p.PenaltyId);
-
-            //modelBuilder.Entity<LibraryUser>()
-            //    .HasQueryFilter(u => u.Status == "Active" && u.EmailConfirmed);
         }
     }
 
