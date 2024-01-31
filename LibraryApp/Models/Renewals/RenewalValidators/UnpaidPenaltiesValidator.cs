@@ -1,10 +1,7 @@
-﻿using LibraryApp.Models.Database;
-using LibraryApp.Models.Database.Entities;
+﻿using LibraryApp.Models.Database.Entities;
 using LibraryApp.Models.Renewals.Contracts;
 using LibraryApp.Models.Renewals.RenewalErrors;
-using LibraryApp.Models.Repositories.Renewals;
 using LibraryApp.Models.Specifications.RenewalSpecification;
-using Microsoft.EntityFrameworkCore;
 
 namespace LibraryApp.Models.Renewals.RenewalValidators
 {

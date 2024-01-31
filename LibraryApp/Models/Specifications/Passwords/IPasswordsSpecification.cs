@@ -2,7 +2,7 @@
 {
     public interface IPasswordsSpecification
     {
-        public int MinimumLength { get;}
+        public int MinimumLength { get; }
         public bool DigitsRequired { get; }
         public bool NonAlphanumericRequired { get; }
     }

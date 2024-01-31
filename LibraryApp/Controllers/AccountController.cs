@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using LibraryApp.Models.Accounts.Contracts;
+using LibraryApp.Models.Database.Entities;
+using LibraryApp.Models.Repositories.Accounts;
+using LibraryApp.Models.Repositories.Readers;
+using LibraryApp.Models.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using System.Text.Encodings.Web;
-using System.Text;
-using LibraryApp.Models.Database.Entities;
 using System.Data;
-using LibraryApp.Models.ViewModels;
-using LibraryApp.Models.Repositories.Readers;
-using LibraryApp.Models.Accounts.Contracts;
-using LibraryApp.Models.Repositories.Accounts;
+using System.Text;
+using System.Text.Encodings.Web;
 
 namespace LibraryApp.Controllers
 {

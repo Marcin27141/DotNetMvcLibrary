@@ -1,5 +1,4 @@
-﻿using LibraryApp.Models.Database;
-using LibraryApp.Models.Database.Entities;
+﻿using LibraryApp.Models.Database.Entities;
 using LibraryApp.Models.Renewals.Contracts;
 using LibraryApp.Models.Specifications.RenewalSpecification;
 

@@ -20,6 +20,7 @@ namespace LibraryApp.Models.Database.Generators.EntityGenerators
             var today = DateOnly.FromDateTime(DateTime.Today);
             var readers = _context.Readers.Take(HOW_MANY_USERS).ToList();
             var bookCopies = _context.BookCopies.ToList();
+            var bookCopyId = 0;
 
             foreach (var reader in readers)
             {
@@ -32,8 +33,9 @@ namespace LibraryApp.Models.Database.Generators.EntityGenerators
                         OriginalReturnDeadline = deadline,
                         CurrentDeadline = deadline,
                         ReaderId = reader.LibraryUserId,
-                        BookCopyId = bookCopies[i].BookCopyId
+                        BookCopyId = bookCopies[bookCopyId].BookCopyId
                     });
+                    bookCopyId++;
                 }
             }
             _context.SaveChanges();

@@ -35,7 +35,7 @@ namespace LibraryApp.Controllers
                     RenewalSpanInDays = _renewalRepository.GetRenewalSpan()
                 };
                 return View(viewModel);
-            }            
+            }
         }
 
         [HttpPost]

@@ -7,7 +7,7 @@
         public DateOnly OriginalReturnDeadline { get; set; }
         public DateOnly CurrentDeadline { get; set; }
         public DateOnly? ReturnDate { get; set; }
-        
+
 
         //relations
         public string ReaderId { get; set; }

@@ -18,7 +18,7 @@ button {
     background-color: lightseagreen
 }
 
-button:hover {
+.rental-buttons button:hover {
     box-shadow: 2px 2px #888888;
 }
 

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryApp.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20240127145606_DatabaseSchema")]
+    [Migration("20240130080730_DatabaseSchema")]
     partial class DatabaseSchema
     {
         /// <inheritdoc />
@@ -183,13 +183,13 @@ namespace LibraryApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PenaltyId"));
 
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateOnly>("ImpositionDate")
                         .HasColumnType("date");
 
-                    b.Property<int>("PaymentId")
+                    b.Property<int?>("PaymentId")
                         .HasColumnType("int");
 
                     b.Property<string>("ReaderId")
@@ -545,8 +545,7 @@ namespace LibraryApp.Migrations
 
             modelBuilder.Entity("LibraryApp.Models.Database.Entities.Penalty", b =>
                 {
-                    b.Navigation("Payment")
-                        .IsRequired();
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("LibraryApp.Models.Database.Entities.Reader", b =>

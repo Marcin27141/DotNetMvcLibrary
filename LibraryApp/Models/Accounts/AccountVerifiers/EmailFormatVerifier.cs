@@ -8,7 +8,7 @@ namespace LibraryApp.Models.Accounts.AccountVerifiers
     {
         public AccountValidationResult VerifyAccount(RegisterViewModel user)
         {
-            
+
             if (user.Email != null && IsInCorrectFormat(user.Email))
                 return AccountValidationResult.Success();
             else return AccountValidationResult.Failure(new AccountValidationError(

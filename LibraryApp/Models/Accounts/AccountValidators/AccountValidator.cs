@@ -1,5 +1,5 @@
-﻿using LibraryApp.Models.ViewModels;
-using LibraryApp.Models.Accounts.Contracts;
+﻿using LibraryApp.Models.Accounts.Contracts;
+using LibraryApp.Models.ViewModels;
 
 namespace LibraryApp.Models.Accounts.AccountValidator
 {
